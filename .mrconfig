@@ -1,0 +1,34 @@
+[DEFAULT]
+install = 
+    if test -f requirements.txt; then
+        pip install -r requirements.txt
+    fi
+    if test -f setup.py; then
+        pip install -e .
+    fi
+
+[src/PhD]
+checkout = git clone 'git@github.com:guhur/PhD.git' 'PhD'
+
+[src/mime]
+checkout = git clone --branch rlons 'git@github.com:ikalevatykh/mime.git' 'mime'
+
+[src/auto-boring]
+checkout = git clone 'git@github.com:guhur/auto-boring.git' 'auto-boring'
+update = git pull --rebase
+
+[src/nalangen]
+checkout = git clone 'git@github.com:guhur/nalangen.git' 'nalangen'
+
+[src/nalanbot]
+checkout = git clone 'git@github.com:guhur/nalanbot.git' 'nalanbot'
+
+[src/guhur.github.io]
+checkout = git clone 'git@github.com:guhur/guhur.github.io.git' 'guhur.github.io'
+
+[src/bmat]
+checkout = git clone git@github.com:guhur/bamt.git 'bmat'
+
+[src/bmat]
+checkout = git clone git@github.com:guhur/bmat.git bmat
+

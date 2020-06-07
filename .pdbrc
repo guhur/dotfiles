@@ -1,0 +1,4 @@
+from pprint import pformat, pprint
+_L = locals()
+alias pl pprint(_L);
+alias dl with open('/tmp/locals.txt', 'w') as f: f.write(pformat(_L))

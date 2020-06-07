@@ -1,0 +1,14 @@
+[TYPECHECK]
+ignored-modules=torch
+ignored-classes=torch
+
+[MESSAGES CONTROL]
+disable=C0111
+
+[FORMAT]
+# Maximum number of characters on a single line.
+max-line-length=100
+
+
+
+
