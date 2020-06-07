@@ -3,7 +3,7 @@ INSTALL_DIR=~
 .PHONY: install
 install: clean update
 	git clone https://github.com/gpakosz/.tmux.git ${INSTALL_DIR}/.tmux
-	git clone https://github.com/ohmyzsh/ohmyzsh.git ${INSTALL_DIR}/.ohmyzsh
+	git clone https://github.com/ohmyzsh/ohmyzsh.git ${INSTALL_DIR}/.oh-my-zsh
 
 .PHONY: update
  update: 
