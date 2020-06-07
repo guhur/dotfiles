@@ -2,22 +2,22 @@ INSTALL_DIR=~
 
 .PHONY: install
 install: clean update
+	git clone https://github.com/gpakosz/.tmux.git ${INSTALL_DIR}/.tmux
+	git clone https://github.com/ohmyzsh/ohmyzsh.git ${INSTALL_DIR}/.ohmyzsh
 
 .PHONY: update
  update: 
 	mkdir -p $(INSTALL_DIR)/.config
-	cp -r .config/nvim ${INSTALL_DIR}/.config
-	cp -r .config/mypy ${INSTALL_DIR}/.config
-	cp .pdbrc $(INSTALL_DIR)
-	cp .pylintrc $(INSTALL_DIR)
-	cp -r .vim $(INSTALL_DIR)
-	cp .vimrc $(INSTALL_DIR)
-	cp .zshrc $(INSTALL_DIR)
-	cp .mrconfig $(INSTALL_DIR)
-	cp .gitconfig $(INSTALL_DIR)
-	cp .tmux.conf.local $(INSTALL_DIR)
-	sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-	git clone https://github.com/gpakosz/.tmux.git ${INSTALL_DIR}/.tmux
+	ln -sf ${PWD}/.config/nvim ${INSTALL_DIR}/.config
+	ln -sf ${PWD}/.config/mypy ${INSTALL_DIR}/.config
+	ln -sf ${PWD}/.pdbrc $(INSTALL_DIR)
+	ln -sf ${PWD}/.pylintrc $(INSTALL_DIR)
+	ln -sf ${PWD}/.vim $(INSTALL_DIR)
+	ln -sf ${PWD}/.vimrc $(INSTALL_DIR)
+	ln -sf ${PWD}/.zshrc $(INSTALL_DIR)
+	ln -sf ${PWD}/.mrconfig $(INSTALL_DIR)
+	ln -sf ${PWD}/.gitconfig $(INSTALL_DIR)
+	ln -sf ${PWD}/.tmux.conf.local $(INSTALL_DIR)
 
 .PHONY: clean
 clean:
