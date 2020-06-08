@@ -3,6 +3,8 @@ set nocompatible              " be iMproved, required
 filetype indent plugin on
 filetype plugin indent on    " required
 
+let mapleader = " "
+
 " Line numbers
 set number relativenumber
 augroup numbertoggle
@@ -36,14 +38,4 @@ augroup END
 
 
 autocmd Filetype python setlocal expandtab tabstop=4 shiftwidth=4
-autocmd Filetype javascript setlocal expandtab tabstop=4 shiftwidth=4
-
-
-" Visualizing the indentation
-let g:ale_linters = {
-  \   'python': ['flake8', 'pylint'],
-  \   'javascript': ['eslint'],
-  \   'react': ['eslint'],
-  \    'scss': ['prettier'],
-  \    'html': ['prettier'],
-\}
+autocmd Filetype javascript setlocal expandtab tabstop=2 shiftwidth=2
