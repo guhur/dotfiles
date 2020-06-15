@@ -2,5 +2,13 @@
 	"python.formatting.provider": "black",
 	"python.linting.mypyEnabled": true,
 	"python.linting.pylintEnabled": false,
-	"coc.preferences.formatOnSaveFiletypes": ["python"]
+	"coc.preferences.formatOnSaveFiletypes": [
+		"python",
+		"javascript",
+		"javascriptreact",
+		"typescript",
+		"typescriptreact",
+		"json"
+	],
+	"coc.preferences.useTabs": false
 }

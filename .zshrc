@@ -133,4 +133,4 @@ if [ -d $HOME/src/bullet3/build_cmake/examples/pybullet ]; then
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-export FZF_DEFAULT_COMMAND='fd --type f'
+export FZF_DEFAULT_COMMAND='fdfind --type f'
