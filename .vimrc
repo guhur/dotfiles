@@ -4,6 +4,7 @@ filetype indent plugin on
 filetype plugin indent on    " required
 
 let mapleader = " "
+set mouse=a
 
 " Line numbers
 set number relativenumber
