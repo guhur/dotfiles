@@ -1,3 +1,8 @@
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
 export PATH=$HOME/.local/bin:$PATH
 export LD_LIBRARY_PATH=$HOME/.local/lib:$PATH
 if [ -x "$(command -v nvim)" ]; then
@@ -22,6 +27,20 @@ export USE_CONDA=false
 export PYENV_ROOT=$HOME/.pyenv/
 export CONDA_ROOT=$HOME/anaconda3
 
+# commands
+# -----------------------------------------------------------------------------
+alias tb="nc termbin.com 9999" 
+alias ca="conda activate"
+alias pudb="python -m pudb.run "
+alias e="nvim"
+alias tad="tmux a -d"
+alias pdb="python -m pdb -c c"
+# alias rsync="rsync --info=progress3"
+alias rscp='rsync -aP'
+alias rsmv='rsync -aP --remove-source-files'
+
+# specific config
+# -----------------------------------------------------------------------------
 if [ -d $HOME/.config/zsh ]; then
 	for f in $(ls $HOME/.config/zsh/*.zsh); do
 		source $f;
@@ -32,12 +51,12 @@ fi
 # -----------------------------------------------------------------------------
 if [ "$USE_CONDA" = true ]; then
     # >>> conda initialize >>>
-    __conda_setup="$('""$CONDA_ROOT""'/bin/conda 'shell.bash' 'hook' 2> /dev/null)"
+    __conda_setup="$('""$CONDA_ROOT""'/bin/conda 'shell.zsh' 'hook' 2> /dev/null)"
     if [ $? -eq 0 ]; then
         eval "$__conda_setup"
     else
         if [ -f "$CONDA_ROOT/etc/profile.d/conda.sh" ]; then
-            . "$CONDA_ROOT/etc/profile.d/conda.sh"
+# . "$CONDA_ROOT/etc/profile.d/conda.sh"  # commented out by conda initialize
         else
             export PATH="$CONDA_ROOT/bin:$PATH"
         fi
@@ -52,24 +71,6 @@ if [ "$USE_PYENV" = true ]; then
     eval "$(pyenv virtualenv-init -)"
 fi
 
-
-# NPM env
-#------------------------------------------------------------------------------
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-if [[ -d $HOME/.npm-modules ]]; then
-  export PATH=$PATH:$HOME/.npm-modules/bin
-fi
-
-
-# GPU 
-# -----------------------------------------------------------------------------
-if [[ "`hostname`" == diffrac ]]; then
-  export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
-  export PATH=$PATH:/usr/local/cuda/bin
-else
-  export LD_LIBRARY_PATH=/usr/local/cuda/lib:$LD_LIBRARY_PATH
-  export PATH=$PATH:/usr/local/cuda/bin
-fi
 
 
 # ZSH
@@ -88,49 +89,6 @@ local ret_status="%(?:%{$fg_bold[green]%}%m:%{$fg_bold[red]%}%m)"
 PROMPT='${ret_status} %{$fg[cyan]%}%c%{$reset_color%} $(git_prompt_info)'
 
 
-# commands
-# -----------------------------------------------------------------------------
-alias tb="nc termbin.com 9999" 
-alias ca="conda activate"
-alias pudb="python -m pudb.run "
-alias e="nvim"
-alias tad="tmux a -d"
-alias pdb="python -m pdb -c c"
-alias rsync="rsync --info=progress3"
-
-# ros
-# -----------------------------------------------------------------------------
-if [ -d /opt/ros/melodic/ ]; then
-  source /opt/ros/melodic/setup.zsh
-  # bugfix on robothoth
-  export LD_LIBRARY_PATH=/optlouis/ros/lib:$LD_LIBRARY_PATH
-fi
-if [ -d ~/ros ]; then
-  source $HOME/ros/devel/setup.zsh
-fi
-
-# pinocchio
-# ---------
-if [ -d /opt/openrobots/ ]; then
-  export PATH=/opt/openrobots/bin:$PATH 
-  export PKG_CONFIG_PATH=/opt/openrobots/lib/pkgconfig:$PKG_CONFIG_PATH
-  export LD_LIBRARY_PATH=/opt/openrobots/lib:$LD_LIBRARY_PATH
-  export PYTHONPATH=/opt/openrobots/lib/python3.6/site-packages:$PYTHONPATH
-fi
-
-# mujoco 
-# ------ 
-if [ -d $HOME/.mujoco ]; then 
-  export LD_LIBRARY_PATH=$HOME/.mujoco/mujoco200/bin:$LD_LIBRARY_PATH
-  # See explanations on https://github.com/openai/mujoco-py/pull/145
-  export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libGLEW.so:/usr/lib/x86_64-linux-gnu/libGL.so
-fi 
-
-# pybullet 
-# --------
-if [ -d $HOME/src/bullet3/build_cmake/examples/pybullet ]; then
-  export PYTHONPATH=$HOME/src/bullet3/build_cmake/examples/pybullet:$PYTHONPATH
-fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export FZF_DEFAULT_COMMAND='fdfind --type f'
