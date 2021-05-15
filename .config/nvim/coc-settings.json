@@ -1,14 +1,15 @@
 {
-	"python.formatting.provider": "black",
-	"python.linting.mypyEnabled": true,
-	"python.linting.pylintEnabled": false,
-	"coc.preferences.formatOnSaveFiletypes": [
-		"python",
-		"javascript",
-		"javascriptreact",
-		"typescript",
-		"typescriptreact",
-		"json"
-	],
-	"coc.preferences.useTabs": false
+  "python.formatting.provider": "black",
+  "python.linting.mypyEnabled": true,
+  "python.jediEnabled": true,
+  "python.pythonPath": "/home/pierre-louis/.pyenv/versions/3.8.2/bin/python",
+  "python.linting.pylintEnabled": false,
+  "coc.preferences.formatOnSaveFiletypes": [
+    "python",
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "json"
+  ]
 }

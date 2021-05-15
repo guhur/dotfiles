@@ -14,9 +14,15 @@ Plug 'morhetz/gruvbox'
 Plug 'vim-airline/vim-airline'
 Plug 'ryanoasis/vim-devicons'
 
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
+" Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+" Plug 'junegunn/fzf.vim'
+" source ~/.vim/fzf.vim
+if has('nvim')
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+endif
 
 call plug#end()
 
@@ -25,7 +31,9 @@ call plug#end()
 colorscheme gruvbox
 set termguicolors
 
+if has('nvim')
+	source ~/.vim/coc.nvim
+	source ~/.vim/telescope.nvim
+endif
 
-source ~/.vim/coc.nvim
-source ~/.vim/fzf.vim
 
