@@ -6,6 +6,8 @@ filetype plugin indent on    " required
 let mapleader = " "
 set mouse=a
 
+set hidden
+
 " Line numbers
 set number relativenumber
 augroup numbertoggle
