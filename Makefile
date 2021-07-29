@@ -18,6 +18,7 @@ install: clean update
 	ln -sf ${PWD}/.mrconfig $(INSTALL_DIR)
 	ln -sf ${PWD}/.gitconfig $(INSTALL_DIR)
 	ln -sf ${PWD}/.tmux.conf.local $(INSTALL_DIR)
+	ln -sf ${INSTALL_DIR}/.tmux/.tmux.conf  $(INSTALL_DIR)/.tmux.conf
 
 .PHONY: clean
 clean:
