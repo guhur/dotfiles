@@ -1,12 +1,14 @@
 INSTALL_DIR=~
+LOCAL_DIR=$(INSTALL_DIR)/.local
 
-.PHONY: install
+all: install update clean nvim
+.PHONY: all
+	
 install: clean update
 	git clone https://github.com/gpakosz/.tmux.git ${INSTALL_DIR}/.tmux
 	git clone https://github.com/ohmyzsh/ohmyzsh.git ${INSTALL_DIR}/.oh-my-zsh
 
-.PHONY: update
- update: 
+update: 
 	mkdir -p $(INSTALL_DIR)/.config
 	ln -sf ${PWD}/.config/nvim ${INSTALL_DIR}/.config
 	ln -sf ${PWD}/.config/mypy ${INSTALL_DIR}/.config
@@ -20,7 +22,6 @@ install: clean update
 	ln -sf ${PWD}/.tmux.conf.local $(INSTALL_DIR)
 	ln -sf ${INSTALL_DIR}/.tmux/.tmux.conf  $(INSTALL_DIR)/.tmux.conf
 
-.PHONY: clean
 clean:
 	rm -rf $(INSTALL_DIR)/.config/nvim
 	rm -rf $(INSTALL_DIR)/.config/mypy
@@ -34,3 +35,10 @@ clean:
 	rm -rf $(INSTALL_DIR)/.tmux.conf.local
 	rm -rf $(INSTALL_DIR)/.oh-my-zsh
 	rm -rf $(INSTALL_DIR)/.tmux
+
+neovim:
+	if ! command -v nvim %> /dev/null ; then \
+		mkdir -p $(LOCAL_DIR)/bin && \
+		wget https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage -O $(LOCAL_DIR)/bin/nvim && \
+		chmod a+x $(LOCAL_DIR)/bin/nvim; \
+	fi
