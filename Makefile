@@ -1,5 +1,6 @@
 INSTALL_DIR=~
 LOCAL_DIR=$(INSTALL_DIR)/.local
+GITHUB_VERSION = 1.14.0
 
 all: install update clean nvim
 .PHONY: all
@@ -41,4 +42,13 @@ neovim:
 		mkdir -p $(LOCAL_DIR)/bin && \
 		wget https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage -O $(LOCAL_DIR)/bin/nvim && \
 		chmod a+x $(LOCAL_DIR)/bin/nvim; \
+	fi
+
+gh:
+	if ! command -v gh %> /dev/null ; then \
+		mkdir -p $(LOCAL_DIR)/bin && \
+		wget https://github.com/cli/cli/releases/download/v$(GITHUB_VERSION)/gh_$(GITHUB_VERSION)_linux_amd64.tar.gz -O gh.tar.gz && \
+			tar -xzvf gh.tar.gz  && \
+			mv gh_$(GITHUB_VERSION)_linux_amd64/bin/gh $(LOCAL_DIR)/bin/gh && \
+			chmod a+x $(LOCAL_DIR)/bin/gh; \
 	fi

@@ -299,3 +299,4 @@ bind _ split-window -v
 
 set-option -sa terminal-overrides ',xterm-256color:RGB'
 
+set-window-option -g mode-keys vi
