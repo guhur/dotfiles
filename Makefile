@@ -52,3 +52,15 @@ gh:
 			mv gh_$(GITHUB_VERSION)_linux_amd64/bin/gh $(LOCAL_DIR)/bin/gh && \
 			chmod a+x $(LOCAL_DIR)/bin/gh; \
 	fi
+
+
+zsh:
+	if ! command -v zsh %> /dev/null ; then \
+		wget https://github.com/zsh-users/zsh/archive/refs/tags/zsh-5.8.tar.gz
+		tar -xzvf zsh-5.8.tar.gz
+		cd zsh-zsh-5.8
+		./Util/preconfig
+		./configure --prefix=$(LOCAL_DIR)/.local
+		make -j 5
+		make install
+	fi
