@@ -1,6 +1,8 @@
 INSTALL_DIR=~
 LOCAL_DIR=$(INSTALL_DIR)/.local
 GITHUB_VERSION = 1.14.0
+ZSH_VERSION = 5.8
+NODE_VERSION = 16.9.1
 
 all: install update clean nvim
 .PHONY: all
@@ -49,18 +51,31 @@ gh:
 		mkdir -p $(LOCAL_DIR)/bin && \
 		wget https://github.com/cli/cli/releases/download/v$(GITHUB_VERSION)/gh_$(GITHUB_VERSION)_linux_amd64.tar.gz -O gh.tar.gz && \
 			tar -xzvf gh.tar.gz  && \
-			mv gh_$(GITHUB_VERSION)_linux_amd64/bin/gh $(LOCAL_DIR)/bin/gh && \
+			rsync -ar gh_$(GITHUB_VERSION)_linux_amd64/ $(LOCAL_DIR) && \
 			chmod a+x $(LOCAL_DIR)/bin/gh; \
 	fi
 
 
 zsh:
 	if ! command -v zsh %> /dev/null ; then \
-		wget https://github.com/zsh-users/zsh/archive/refs/tags/zsh-5.8.tar.gz
-		tar -xzvf zsh-5.8.tar.gz
-		cd zsh-zsh-5.8
-		./Util/preconfig
-		./configure --prefix=$(LOCAL_DIR)/.local
-		make -j 5
-		make install
+		wget https://github.com/zsh-users/zsh/archive/refs/tags/zsh-$(ZSH_VERSION).tar.gz && \
+		tar -xzvf zsh-$(ZSH_VERSION).tar.gz && \
+		cd zsh-zsh-$(ZSH_VERSION) && \
+		./Util/preconfig && \
+		./configure --prefix=$(LOCAL_DIR)/.local && \
+		make -j 5 && \
+		make install && \
+		rm zsh-zsh-$(ZSH_VERSION); \
+	fi
+
+npm:
+	if ! command -v npm %> /dev/null ; then \
+		$(shell curl -qL https://www.npmjs.com/install.sh | sh)
+	fi
+
+node:
+	if ! command -v node %> /dev/null; then \
+		wget https://nodejs.org/download/release/latest-v16.x/node-v$(NODE_VERSION)-linux-x64.tar.xz && \
+		tar -xf  node-v$(NODE_VERSION)-linux-x64.tar.xz && \
+		rsync -ar node-v$(NODE_VERSION)-linux-x64 $(LOCAL_DIR)
 	fi
