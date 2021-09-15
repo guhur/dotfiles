@@ -70,12 +70,12 @@ zsh:
 
 npm:
 	if ! command -v npm %> /dev/null ; then \
-		$(shell curl -qL https://www.npmjs.com/install.sh | sh)
+		$(shell curl -qL https://www.npmjs.com/install.sh | sh); \
 	fi
 
 node:
 	if ! command -v node %> /dev/null; then \
 		wget https://nodejs.org/download/release/latest-v16.x/node-v$(NODE_VERSION)-linux-x64.tar.xz && \
 		tar -xf  node-v$(NODE_VERSION)-linux-x64.tar.xz && \
-		rsync -ar node-v$(NODE_VERSION)-linux-x64 $(LOCAL_DIR)
+		rsync -ar node-v$(NODE_VERSION)-linux-x64 $(LOCAL_DIR); \
 	fi
