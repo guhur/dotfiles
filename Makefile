@@ -2,7 +2,7 @@ INSTALL_DIR=~
 LOCAL_DIR=$(INSTALL_DIR)/.local
 GITHUB_VERSION = 1.14.0
 ZSH_VERSION = 5.8
-NODE_VERSION = 16.9.1
+NODE_VERSION = 16.12.0
 
 all: install update clean nvim
 .PHONY: all
@@ -75,7 +75,8 @@ npm:
 
 node:
 	if ! command -v node %> /dev/null; then \
-		wget https://nodejs.org/download/release/latest-v16.x/node-v$(NODE_VERSION)-linux-x64.tar.xz && \
+		wget https://nodejs.org/download/release/$(NODE_VERSION)/node-v$(NODE_VERSION)-linux-x64.tar.xz && \
 		tar -xf  node-v$(NODE_VERSION)-linux-x64.tar.xz && \
-		rsync -arP node-v$(NODE_VERSION)-linux-x64 $(LOCAL_DIR); \
+		rsync -arP node-v$(NODE_VERSION)-linux-x64/* $(LOCAL_DIR) && \
+		rm -r node-v$(NODE_VERSION)-linux-x64 ; \
 	fi
