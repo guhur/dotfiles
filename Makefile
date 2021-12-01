@@ -87,3 +87,9 @@ powerline:
 	fc-cache -vf ~/.fonts && \
 	mkdir -p ~/.config/fontconfig/conf.d/ && mv 10-powerline-symbols.conf ~/.config/fontconfig/conf.d/
 
+
+miniconda:
+	wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+	zsh ~/miniconda.sh -b -p ~/miniconda && \
+	rm ~/miniconda.sh && \
+	export PATH=~/miniconda/bin:$PATH

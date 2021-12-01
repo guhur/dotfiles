@@ -23,7 +23,7 @@ export DIFFRAC_SCRATCH=/scratch/diffrac/
 export JEANZAY_HOME=/gpfsssd/scratch/rech/vuo/uok79zh/
 export JEANZAY_SCRATCH=/gpfsscratch/rech/vuo/uok79zh
 
-export USE_PYENV=true
+export USE_PYENV=false
 export USE_CONDA=false
 export PYENV_ROOT=$HOME/.pyenv/
 export CONDA_ROOT=$HOME/anaconda3
