@@ -75,14 +75,14 @@ npm:
 
 node:
 	if ! command -v node %> /dev/null; then \
-		wget https://nodejs.org/download/release/$(NODE_VERSION)/node-v$(NODE_VERSION)-linux-x64.tar.xz && \
-		tar -xf  node-v$(NODE_VERSION)-linux-x64.tar.xz && \
-		rsync -arP node-v$(NODE_VERSION)-linux-x64/* $(LOCAL_DIR) && \
-		rm -r node-v$(NODE_VERSION)-linux-x64 ; \
+		curl https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh -O nvm.sh && \
+		./nvm.sh && \
+		rm nvm.sh && \
+		NVM_NODEJS_ORG_MIRROR=http://nodejs.org/dist nvm install node; \
 	fi
 
 powerline:
-	wget https://github.com/Lokaltog/powerline/raw/develop/font/PowerlineSymbols.otf https://github.com/Lokaltog/powerline/raw/develop/font/10-powerline-symbols.conf && \
+	wget https://github.com/Lokaltog/powerline/raw/develop/font/PowerlineSymbols.otf https://github.com/Lokaltog/powerline/raw/develop/font/10-powerline-symbols.conf --no-check-certificate && \
 	mkdir -p ~/.fonts/ && mv PowerlineSymbols.otf ~/.fonts/ && \
 	fc-cache -vf ~/.fonts && \
 	mkdir -p ~/.config/fontconfig/conf.d/ && mv 10-powerline-symbols.conf ~/.config/fontconfig/conf.d/
