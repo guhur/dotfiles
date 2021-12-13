@@ -4,7 +4,7 @@ GITHUB_VERSION = 1.14.0
 ZSH_VERSION = 5.8
 NODE_VERSION = 16.12.0
 
-all: install update clean nvim
+all: install update clean nvim ripgrep miniconda
 .PHONY: all
 	
 install: clean update
@@ -93,3 +93,9 @@ miniconda:
 	zsh ~/miniconda.sh -b -p ~/miniconda && \
 	rm ~/miniconda.sh && \
 	export PATH=~/miniconda/bin:$PATH
+
+ripgrep:
+	curl -LO https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz && \
+	tar -xzvf ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz  && \
+	mv ripgrep-13.0.0-x86_64-unknown-linux-musl/rg $(LOCAL_DIR)/bin && \
+	rm -r ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz ripgrep-13.0.0-x86_64-unknown-linux-musl
