@@ -20,6 +20,7 @@ update:
 	ln -sf ${PWD}/.vim $(INSTALL_DIR)
 	ln -sf ${PWD}/.vimrc $(INSTALL_DIR)
 	ln -sf ${PWD}/.zshrc $(INSTALL_DIR)
+	ln -sf ${PWD}/.fzf.zsh $(INSTALL_DIR)
 	ln -sf ${PWD}/.mrconfig $(INSTALL_DIR)
 	ln -sf ${PWD}/.gitconfig $(INSTALL_DIR)
 	ln -sf ${PWD}/.tmux.conf.local $(INSTALL_DIR)
@@ -28,14 +29,15 @@ update:
 clean:
 	rm -rf $(INSTALL_DIR)/.config/nvim
 	rm -rf $(INSTALL_DIR)/.config/mypy
-	rm -rf $(INSTALL_DIR)/.pdbrc
-	rm -rf $(INSTALL_DIR)/.pylintrc
-	rm -rf $(INSTALL_DIR)/.vim
-	rm -rf $(INSTALL_DIR)/.vimrc
-	rm -rf $(INSTALL_DIR)/.zshrc
-	rm -rf $(INSTALL_DIR)/.mrconfig
-	rm -rf $(INSTALL_DIR)/.gitconfig
-	rm -rf $(INSTALL_DIR)/.tmux.conf.local
+	rm -f $(INSTALL_DIR)/.pdbrc
+	rm -f $(INSTALL_DIR)/.pylintrc
+	rm -f $(INSTALL_DIR)/.vim
+	rm -f $(INSTALL_DIR)/.vimrc
+	rm -f $(INSTALL_DIR)/.zshrc
+	rm -f ${INSTALL_DIR}/.fzf.zsh 
+	rm -f $(INSTALL_DIR)/.mrconfig
+	rm -f $(INSTALL_DIR)/.gitconfig
+	rm -f $(INSTALL_DIR)/.tmux.conf.local
 	rm -rf $(INSTALL_DIR)/.oh-my-zsh
 	rm -rf $(INSTALL_DIR)/.tmux
 
