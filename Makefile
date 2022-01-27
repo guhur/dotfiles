@@ -103,3 +103,10 @@ ripgrep:
 	tar -xzvf ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz  && \
 	mv ripgrep-13.0.0-x86_64-unknown-linux-musl/rg $(LOCAL_DIR)/bin && \
 	rm -r ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz ripgrep-13.0.0-x86_64-unknown-linux-musl
+
+pv:
+	wget https://anaconda.org/conda-forge/pv/1.6.6/download/linux-64/pv-1.6.6-h470a237_0.tar.bz2
+	mkdir pv
+	tar -xvf pv-1.6.6-h470a237_0.tar.bz2 -C pv
+	mv pv/bin/pv $(LOCAL_DIR)/bin/
+	rsync -r pv/share/ $(LOCAL_DIR)/share/
