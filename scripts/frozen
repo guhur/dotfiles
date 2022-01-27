@@ -1,0 +1,9 @@
+DESTDIR=$STORE/frozen
+mkdir -vp $DESTDIR
+
+# where are the files that need to be frozen?
+DATA=$1
+
+DEST=$DESTDIR/$(basename $DATA).tar.gz
+
+tar cf - $DATA -P | pv -s $(du -sb $DATA | awk '{print $1}') | gzip > $DEST

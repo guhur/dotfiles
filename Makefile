@@ -13,6 +13,7 @@ install: clean update
 
 update: 
 	mkdir -p $(INSTALL_DIR)/.config
+	mkdir -p $(LOCAL_DIR)/bin
 	ln -sf ${PWD}/.config/nvim ${INSTALL_DIR}/.config
 	ln -sf ${PWD}/.config/mypy ${INSTALL_DIR}/.config
 	ln -sf ${PWD}/.pdbrc $(INSTALL_DIR)
@@ -25,6 +26,7 @@ update:
 	ln -sf ${PWD}/.gitconfig $(INSTALL_DIR)
 	ln -sf ${PWD}/.tmux.conf.local $(INSTALL_DIR)
 	ln -sf ${INSTALL_DIR}/.tmux/.tmux.conf  $(INSTALL_DIR)/.tmux.conf
+	for f in $(ls $(PWD)/scripts/); do ln -sf $(PWD)/scripts/$f $(LOCAL_DIR)/bin/$f; done
 
 clean:
 	rm -rf $(INSTALL_DIR)/.config/nvim
