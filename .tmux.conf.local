@@ -295,6 +295,7 @@ set -g mouse on
 set -g status-position top
 
 bind | split-window -h
+bind ¬ split-window -h
 bind _ split-window -v
 
 set-option -sa terminal-overrides ',xterm-256color:RGB'

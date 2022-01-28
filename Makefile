@@ -1,11 +1,20 @@
+OS=linux
+ARCH=amd64
+
 INSTALL_DIR=~
 LOCAL_DIR=$(INSTALL_DIR)/.local
+
 GITHUB_VERSION = 1.14.0
 ZSH_VERSION = 5.8
 NODE_VERSION = 16.12.0
+GO_VERSION=1.17.6
+SINGULARITY_VERSION=3.9.4
 
-all: install update clean nvim ripgrep miniconda
+all: install update clean
 .PHONY: all
+
+help :           ## Show this help.
+	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 	
 install: clean update
 	git clone https://github.com/gpakosz/.tmux.git ${INSTALL_DIR}/.tmux
@@ -110,3 +119,21 @@ pv:
 	tar -xvf pv-1.6.6-h470a237_0.tar.bz2 -C pv
 	mv pv/bin/pv $(LOCAL_DIR)/bin/
 	rsync -r pv/share/ $(LOCAL_DIR)/share/
+
+singularity:
+	# sudo apt-get update && sudo apt-get install -y \
+	#     build-essential \
+	#     libssl-dev \
+	#     uuid-dev \
+	#     libgpgme11-dev \
+	#     squashfs-tools \
+	#     libseccomp-dev \
+	#     wget \
+	#     pkg-config \
+	#     git
+	wget https://dl.google.com/go/go$(GO_VERSION).$(OS)-$(ARCH).tar.gz --no-check-certificate
+	tar -xzvf go$(GO_VERSION).$(OS)-$(ARCH).tar.gz
+	rsync -r go/ $(LOCAL_DIR)
+	rm -r go$(GO_VERSION).$(OS)-$(ARCH).tar.gz go/
+	wget https://github.com/sylabs/singularity/releases/download/v${SINGULARITY_VERSION}/singularity-ce_${SINGULARITY_VERSION}-bionic_$(ARCH).deb --no-check-certificate
+	sudo dpkg -i singularity-ce_${SINGULARITY_VERSION}-bionic_amd64.deb
