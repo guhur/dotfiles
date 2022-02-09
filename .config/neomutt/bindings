@@ -1,0 +1,30 @@
+# vim: filetype=muttrc
+# Remove all binding
+
+bind generic q exit
+
+unbind index
+bind index j next-undeleted
+bind index k previous-undeleted
+bind index l display-message
+bind index d delete-thread
+bind index x delete-message
+bind index u undelete-message
+
+unbind pager
+bind pager l next-undeleted
+bind pager h previous-undeleted
+bind pager j next-line 
+bind pager k previous-line 
+bind pager J next-page
+bind pager K previous-page
+bind pager v view-attachments
+
+bind index,pager r reply
+bind index,pager i mail
+
+# Menu 
+bind index,pager <space>h sidebar-toggle-visible
+bind index,pager <space>l sidebar-open
+bind index,pager <space>k sidebar-prev
+bind index,pager <space>j sidebar-next

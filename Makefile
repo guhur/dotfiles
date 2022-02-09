@@ -25,6 +25,7 @@ update:
 	mkdir -p $(LOCAL_DIR)/bin
 	ln -sf ${PWD}/.config/nvim ${INSTALL_DIR}/.config
 	ln -sf ${PWD}/.config/mypy ${INSTALL_DIR}/.config
+	ln -sf ${PWD}/.config/neomutt ${INSTALL_DIR}/.config
 	ln -sf ${PWD}/.pdbrc $(INSTALL_DIR)
 	ln -sf ${PWD}/.pylintrc $(INSTALL_DIR)
 	ln -sf ${PWD}/.vim $(INSTALL_DIR)
@@ -137,3 +138,6 @@ singularity:
 	rm -r go$(GO_VERSION).$(OS)-$(ARCH).tar.gz go/
 	wget https://github.com/sylabs/singularity/releases/download/v${SINGULARITY_VERSION}/singularity-ce_${SINGULARITY_VERSION}-bionic_$(ARCH).deb --no-check-certificate
 	sudo dpkg -i singularity-ce_${SINGULARITY_VERSION}-bionic_amd64.deb
+
+neomutt:
+	sudo apt-get install -y neomutt

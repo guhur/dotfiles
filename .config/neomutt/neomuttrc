@@ -1,0 +1,14 @@
+# vim: filetype=muttrc
+
+source ~/.config/neomutt/settings
+source ~/.config/neomutt/display
+source ~/.config/neomutt/bindings
+
+# Accounts
+source "gpg -dq $HOME/.config/neomutt/.gmailpass.gpg |"
+#source "$HOME/.config/neomutt/pass"
+# encrypt a file with written in it set my_password = "psd"
+# https://wiki.archlinux.org/title/GnuPG#Import_a_public_key
+# and https://wiki.archlinux.org/title/GnuPG#Import_a_public_key
+
+source ~/.config/neomutt/accounts/gmail

@@ -1,0 +1,29 @@
+# vim: filetype=muttrc
+
+color normal white brightblack
+
+# Header colors:
+color header brightblack default ".*"
+color header brightmagenta default "^(From)"
+color header brightcyan default "^(Subject)"
+color header brightmagenta default "^(To)"
+color header brightmagenta default "^(CC|BCC)"
+
+color error red default
+
+color attachment white default
+color search brightyellow default
+color quoted brightgreen default
+color quoted1 yellow default
+color quoted2 brightblue default
+color quoted3 cyan default
+
+# Default index colors:
+color index brightblack default '.*'
+color index_author brightcyan default '.*'
+color index_subject brightmagenta default '.*'
+ 
+# For new mail:
+color index_author white default '~N'
+color index_subject white default '~N'
+

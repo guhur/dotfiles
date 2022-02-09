@@ -1,0 +1,22 @@
+# vim: filetype=muttrc
+
+unset help
+
+# Index
+set sort = reverse-threads 
+set sort_aux = last-date-received
+set uncollapse_jump
+
+# Messages
+set editor = "nvim"
+set edit_headers                     # show headers when composing
+
+set fast_reply                       # skip to compose when replying
+set include                          # include message in replies
+set forward_quote                    # include message in forwards
+
+set tmpdir=~/.local/tmp              # temporary directory when composing messages
+
+set sidebar_format="%B%?F? [%F]?%* %?N?%N/?%S"
+set header_cache = "~/.cache/mutt/header"
+set message_cachedir = "~/.cache/mutt/"
