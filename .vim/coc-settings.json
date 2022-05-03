@@ -2,5 +2,7 @@
   "python.linting.pylintEnabled": false,
   "python.linting.mypyEnabled": true,
   "python.linting.enabled": true,
-  "python.formatting.provider": "autopep8"
+  "python.formatting.provider": "black",
+  "http.proxy": "http://prodprox.idris.fr:3128",
+  "https.proxy": "http://prodprox.idris.fr:3128"
 }

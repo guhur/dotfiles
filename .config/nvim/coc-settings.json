@@ -2,7 +2,7 @@
   "python.formatting.provider": "black",
   "python.linting.mypyEnabled": true,
   "python.jediEnabled": true,
-  "python.pythonPath": "/home/pierre-louis/.pyenv/versions/3.8.2/bin/python",
+  "python.pythonPath": "/gpfswork/rech/vuo/uok79zh/anaconda3/envs/h/bin/python",
   "python.linting.pylintEnabled": false,
   "coc.preferences.formatOnSaveFiletypes": [
     "python",
@@ -11,5 +11,6 @@
     "typescript",
     "typescriptreact",
     "json"
-  ]
+  ],
+  "coc.preferences.extensionUpdateCheck": "daily"
 }

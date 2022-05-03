@@ -298,8 +298,8 @@ bind | split-window -h
 bind ¬ split-window -h
 bind _ split-window -v
 
-set-option -sa terminal-overrides ',xterm-256color:RGB'
+set-option -sa terminal-overrides ',xterm-255color:RGB'
 
 set-window-option -g mode-keys vi
 
-set-option -g default-shell /bin/zsh
+set-option -g default-shell ~/.local/bin/zsh

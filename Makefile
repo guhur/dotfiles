@@ -9,6 +9,7 @@ ZSH_VERSION = 5.8
 NODE_VERSION = 16.12.0
 GO_VERSION=1.17.6
 SINGULARITY_VERSION=3.9.4
+NEOVIM_VERSION=0.7.0
 
 all: install update clean
 .PHONY: all
@@ -34,6 +35,7 @@ update:
 	ln -sf ${PWD}/.fzf.zsh $(INSTALL_DIR)
 	ln -sf ${PWD}/.mrconfig $(INSTALL_DIR)
 	ln -sf ${PWD}/.gitconfig $(INSTALL_DIR)
+	ln -sf ${PWD}/.screenrc $(INSTALL_DIR)
 	ln -sf ${PWD}/.tmux.conf.local $(INSTALL_DIR)
 	ln -sf ${INSTALL_DIR}/.tmux/.tmux.conf  $(INSTALL_DIR)/.tmux.conf
 	for f in $(ls $(PWD)/scripts/); do ln -sf $(PWD)/scripts/$f $(LOCAL_DIR)/bin/$f; done
@@ -56,7 +58,7 @@ clean:
 neovim:
 	if ! command -v nvim %> /dev/null ; then \
 		mkdir -p $(LOCAL_DIR)/bin && \
-		wget https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage -O $(LOCAL_DIR)/bin/nvim && \
+		wget https://github.com/neovim/neovim/releases/download/v$(NEOVIM_VERSION)/nvim.appimage -O $(LOCAL_DIR)/bin/nvim && \
 		chmod a+x $(LOCAL_DIR)/bin/nvim; \
 	fi
 
