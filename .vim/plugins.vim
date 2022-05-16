@@ -9,6 +9,10 @@ call plug#begin('~/.vim/plugged')
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'tmux-plugins/vim-tmux'
 
+" Save copy in a local file
+Plug 'vim-scripts/YankRing.vim'
+nnoremap <silent> <F11> :YRShow<CR>
+
 " Theme
 Plug 'morhetz/gruvbox'
 Plug 'vim-airline/vim-airline'
@@ -27,6 +31,7 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'fannheyward/coc-pyright', {'do': 'yarn install --frozen-lockfile'}
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
 
 endif
 

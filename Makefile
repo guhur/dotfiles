@@ -108,7 +108,7 @@ miniconda:
 	wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
 	zsh ~/miniconda.sh -b -p ~/miniconda && \
 	rm ~/miniconda.sh && \
-	export PATH=~/miniconda/bin:$PATH
+	export PATH=~/miniconda/bin:${PATH}
 
 ripgrep:
 	curl -LO https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz && \
