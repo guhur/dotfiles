@@ -6,6 +6,7 @@ LOCAL_DIR=$(INSTALL_DIR)/.local
 
 GITHUB_VERSION = 1.14.0
 ZSH_VERSION = 5.8
+TMUX_VERSION = 3.2a
 NODE_VERSION = 16.12.0
 GO_VERSION=1.17.6
 SINGULARITY_VERSION=3.9.4
@@ -60,6 +61,13 @@ neovim:
 		mkdir -p $(LOCAL_DIR)/bin && \
 		wget https://github.com/neovim/neovim/releases/download/v$(NEOVIM_VERSION)/nvim.appimage -O $(LOCAL_DIR)/bin/nvim && \
 		chmod a+x $(LOCAL_DIR)/bin/nvim; \
+	fi
+
+tmux:
+	if ! command -v tmux %> /dev/null ; then \
+		mkdir -p $(LOCAL_DIR)/bin && \
+		wget https://github.com/nelsonenzo/tmux-appimage/releases/download/v$(TMUX_VERSION)/tmux.appimage -O $(LOCAL_DIR)/bin/tmux && \
+		chmod a+x $(LOCAL_DIR)/bin/tmux; \
 	fi
 
 gh:
