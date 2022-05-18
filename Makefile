@@ -66,7 +66,7 @@ neovim:
 tmux:
 	if ! command -v tmux %> /dev/null ; then \
 		mkdir -p $(LOCAL_DIR)/bin && \
-		wget https://github.com/nelsonenzo/tmux-appimage/releases/download/v$(TMUX_VERSION)/tmux.appimage -O $(LOCAL_DIR)/bin/tmux && \
+		wget https://github.com/nelsonenzo/tmux-appimage/releases/download/$(TMUX_VERSION)/tmux.appimage -O $(LOCAL_DIR)/bin/tmux && \
 		chmod a+x $(LOCAL_DIR)/bin/tmux; \
 	fi
 
