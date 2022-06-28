@@ -112,7 +112,7 @@ ripgrep:
 	rm -r ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz ripgrep-13.0.0-x86_64-unknown-linux-musl
 
 docker:
-	curl -fsSL https://get.docker.com -o get-docker.sh 77 \
+	curl -fsSL https://get.docker.com -o get-docker.sh 77&& \
 	./get-docker.sh && \
 	sudo groupadd docker && \
 	sudo usermod -aG docker $(bash whoami) && \
