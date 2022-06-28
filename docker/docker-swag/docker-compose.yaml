@@ -18,7 +18,7 @@ services:
       - PROPAGATION= #optional
       - FILE__DUCKDNSTOKEN=/run/docker-swag/duckdnstoken #optional
       - FILE__EMAIL=/run/docker-swag/email #optional
-      - ONLY_SUBDOMAINS=false #optional
+      - ONLY_SUBDOMAINS=true #optional
       - EXTRA_DOMAINS= #optional
       - STAGING=false #optional
     volumes:
