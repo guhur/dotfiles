@@ -14,16 +14,15 @@ services:
       - VALIDATION=http
       - FILE__SUBDOMAINS=/run/docker-swag/subdomains #optional
       - CERTPROVIDER= #optional
-      - DNSPLUGIN=cloudflare #optional
+      - DNSPLUGIN= #optional
       - PROPAGATION= #optional
-      - FILE__DUCKDNSTOKEN=/run/docker-swag/duckdnstoken #optional
       - FILE__EMAIL=/run/docker-swag/email #optional
-      - ONLY_SUBDOMAINS=false #optional
+      - ONLY_SUBDOMAINS=true #optional
       - EXTRA_DOMAINS= #optional
       - STAGING=false #optional
     volumes:
-      - ${NGINX_CONFIG}:/config
-      - ${DOCKERSWAG_CONFIG}:/run/docker-swag
+      - ${SWAG_NGINX_DIR}:/config
+      - ${SWAG_CONFIG_DIR}:/run/docker-swag
     ports:
       - 443:443
       - 80:80 #optional

@@ -118,3 +118,6 @@ docker:
 	sudo usermod -aG docker $(bash whoami) && \
 	newgrp docker
 	
+
+fzf:
+	sudo apt-get install fzf
