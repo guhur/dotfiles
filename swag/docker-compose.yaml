@@ -9,7 +9,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Europe/London
+      - TZ=Europe/Paris
       - FILE__URL=/run/docker-swag/url
       - VALIDATION=http
       - FILE__SUBDOMAINS=/run/docker-swag/subdomains #optional

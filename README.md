@@ -32,11 +32,12 @@ docker compose --env-file /path/to/your/.env up -d
 
 ## Mautic
 
-Copy the `.env` file anywhere else (it could into your `/etc/` or `.env.local`). 
+Copy the `mautic/.env` file anywhere else (it could into your `/etc/` or `.env.local`). 
 
 Install Docker, and launch the container:
 
 ```bash
+cd mautic
 docker compose --env-file /path/to/your/env up -d 
 ```
 
@@ -44,4 +45,36 @@ Then, copy the config file to your nginx proxy-confs folder:
 
 ```bash
 cp $PWD/mautic.subdomain.conf $SWAG_CONFIG_DIR/nginx/nginx/proxy-confs/
+```
+
+Restart the SWAG container:
+
+```bash
+cd swag
+docker compose --env-file /path/to/swag/env/file restart
+```
+
+## Authelia
+
+Copy the `authelia/.env` file anywhere else (it could into your `/etc/` or `.env.local`). 
+
+Install Docker, and launch the container:
+
+```bash
+cd authelia
+docker compose --env-file /path/to/your/env up -d 
+```
+
+Then, move the config file of your nginx proxy-confs folder:
+
+```bash
+cd $SWAG_CONFIG_DIR/nginx/nginx/proxy-confs/
+cp authelia.subdomain.conf.sample authelia.subdomain.conf
+```
+
+Restart the SWAG container:
+
+```bash
+cd swag
+docker compose --env-file /path/to/swag/env/file restart
 ```
