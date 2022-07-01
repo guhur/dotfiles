@@ -98,3 +98,12 @@ export FZF_DEFAULT_COMMAND='fdfind --type f'
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+function pfwd {
+  for i in ${@:2}
+  do
+    echo Forwarding port $i
+    ssh -n -N -L ${i}:localhost:$i $1
+  done  
+}
