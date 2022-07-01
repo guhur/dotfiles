@@ -1,0 +1,29 @@
+---
+version: "2.1"
+services:
+  swag:
+    image: lscr.io/linuxserver/swag:latest
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+      - FILE__URL=/run/docker-swag/url
+      - VALIDATION=http
+      - FILE__SUBDOMAINS=/run/docker-swag/subdomains #optional
+      - CERTPROVIDER= #optional
+      - DNSPLUGIN= #optional
+      - PROPAGATION= #optional
+      - FILE__EMAIL=/run/docker-swag/email #optional
+      - ONLY_SUBDOMAINS=true #optional
+      - EXTRA_DOMAINS= #optional
+      - STAGING=false #optional
+    volumes:
+      - ${SWAG_NGINX_DIR}:/config
+      - ${SWAG_CONFIG_DIR}:/run/docker-swag
+    ports:
+      - 443:443
+      - 80:80 #optional
+    restart: unless-stopped

@@ -4,7 +4,7 @@ ARCH=amd64
 INSTALL_DIR=~
 LOCAL_DIR=$(INSTALL_DIR)/.local
 
-GITHUB_VERSION = 2.11.3
+GITHUB_VERSION = 2.13.0
 ZSH_VERSION = 5.8
 TMUX_VERSION = 3.2a
 NODE_VERSION = 16.12.0
@@ -25,6 +25,7 @@ install: clean update
 update: 
 	mkdir -p $(INSTALL_DIR)/.config
 	mkdir -p $(LOCAL_DIR)/bin
+	ln -sf $(which zsh) $(LOCAL_DIR)/bin/
 	ln -sf ${PWD}/.config/nvim ${INSTALL_DIR}/.config
 	ln -sf ${PWD}/.config/mypy ${INSTALL_DIR}/.config
 	ln -sf ${PWD}/.config/neomutt ${INSTALL_DIR}/.config
@@ -124,30 +125,13 @@ ripgrep:
 	mv ripgrep-13.0.0-x86_64-unknown-linux-musl/rg $(LOCAL_DIR)/bin && \
 	rm -r ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz ripgrep-13.0.0-x86_64-unknown-linux-musl
 
-pv:
-	wget https://anaconda.org/conda-forge/pv/1.6.6/download/linux-64/pv-1.6.6-h470a237_0.tar.bz2
-	mkdir pv
-	tar -xvf pv-1.6.6-h470a237_0.tar.bz2 -C pv
-	mv pv/bin/pv $(LOCAL_DIR)/bin/
-	rsync -r pv/share/ $(LOCAL_DIR)/share/
+docker:
+	curl -fsSL https://get.docker.com -o get-docker.sh 77&& \
+	./get-docker.sh && \
+	sudo groupadd docker && \
+	sudo usermod -aG docker $(bash whoami) && \
+	newgrp docker
+	
 
-singularity:
-	# sudo apt-get update && sudo apt-get install -y \
-	#     build-essential \
-	#     libssl-dev \
-	#     uuid-dev \
-	#     libgpgme11-dev \
-	#     squashfs-tools \
-	#     libseccomp-dev \
-	#     wget \
-	#     pkg-config \
-	#     git
-	wget https://dl.google.com/go/go$(GO_VERSION).$(OS)-$(ARCH).tar.gz --no-check-certificate
-	tar -xzvf go$(GO_VERSION).$(OS)-$(ARCH).tar.gz
-	rsync -r go/ $(LOCAL_DIR)
-	rm -r go$(GO_VERSION).$(OS)-$(ARCH).tar.gz go/
-	wget https://github.com/sylabs/singularity/releases/download/v${SINGULARITY_VERSION}/singularity-ce_${SINGULARITY_VERSION}-bionic_$(ARCH).deb --no-check-certificate
-	sudo dpkg -i singularity-ce_${SINGULARITY_VERSION}-bionic_amd64.deb
-
-neomutt:
-	sudo apt-get install -y neomutt
+fzf:
+	sudo apt-get install fzf
