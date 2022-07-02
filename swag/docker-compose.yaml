@@ -11,7 +11,8 @@ services:
       - PGID=1000
       - TZ=Europe/Paris
       - FILE__URL=/run/docker-swag/url
-      - VALIDATION=http
+      - FILE__VALIDATION=/run/docker-swag/validation
+      - FILE__DUCKDNSTOKEN=/run/docker-swag/duckdns
       - FILE__SUBDOMAINS=/run/docker-swag/subdomains #optional
       - CERTPROVIDER= #optional
       - DNSPLUGIN= #optional

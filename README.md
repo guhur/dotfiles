@@ -78,3 +78,7 @@ Restart the SWAG container:
 cd swag
 docker compose --env-file /path/to/swag/env/file restart
 ```
+
+## Dynamic DNS
+
+Install `ddclient` and modify `/etc/ddclient.conf` as indicated by your DNS.
