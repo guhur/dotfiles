@@ -48,6 +48,9 @@ services:
       - "traefik.http.services.nextcloud.loadbalancer.server.port=80"
       - "traefik.http.routers.nextcloud.tls=true"
       - "traefik.http.routers.nextcloud.tls.certresolver=leresolver"
+      - "traefik.http.middlewares.nextcloud.redirectRegex.permanent=true"
+      - "traefik.http.middlewares.nextcloud.redirectRegex.regex=https://(.*)/.well-known/(card|cal)dav"
+      - "traefik.http.middlewares.nextcloud.redirectRegex.replacement=https://$${1}/remote.php/dav/"
 
   restic:
     depends_on:
