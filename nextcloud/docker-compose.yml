@@ -24,8 +24,6 @@ services:
     image: nextcloud
     container_name: nextcloud_app
     restart: unless-stopped
-    ports:
-      - 8081:80
     environment:
       - MYSQL_HOST=database
       - MYSQL_DATABASE=${NEXTCLOUD_MYSQL_DATABASE}
@@ -56,9 +54,16 @@ services:
     depends_on:
       - nextcloud
     image: restic
-    build: ./restic
+    container_name: nextcloud_restic
+    build:
+      context: ./restic
+      dockerfile: Dockerfile
+      args:
+        RESTIC_INIT_ARGS: $RESTIC_INIT_ARGS
+        RESTIC_PASSWORD: $RESTIC_PASSWORD
+    restart: unless-stopped
     volumes:
-      - ${NEXTCLOUD_DATA_DIR}:/data
+      - ${NEXTCLOUD_DATA_DIR}/data:/data
     environment:
       - PUID=1000
       - PGID=1000
