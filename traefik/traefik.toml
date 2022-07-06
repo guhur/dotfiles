@@ -50,7 +50,7 @@
   # Optional
   # Default: "ERROR"
   #
-  level = "DEBUG"
+  level = "INFO"
 
   # Sets the filepath for the traefik log. If not specified, stdout will be used.
   # Intermediate directories are created if necessary.
@@ -106,7 +106,7 @@
   # Optional
   # Default: false
   #
-  insecure = true
+  insecure = false
 
   # Enabled Dashboard
   #
@@ -120,6 +120,15 @@
   storage = "/etc/traefik/acme.json"
   [certificatesResolvers.leresolver.acme.httpChallenge]
     entryPoint = "web"
+#     sans = ["mail.macrovision.fr", "webmail.macrovision.fr", "smtp.macrovision.fr", "imap.macrovision.fr"]
+# [certificatesResolvers.mailuresolver.acme]
+#   email = "pierrelouisguhur@gmail.com"
+#   storage = "/etc/traefik/acme-mailu.json"
+#   [certificatesResolvers.mailuresolver.acme.httpChallenge]
+#     entryPoint = "web"
+#   [certificatesResolvers.mailuresolver.acme.domains]
+#     main = "mail.macrovision.fr"
+#     sans = ["webmail.macrovision.fr", "smtp.macrovision.fr", "imap.macrovision.fr"]
 
 ################################################################
 # Ping configuration
