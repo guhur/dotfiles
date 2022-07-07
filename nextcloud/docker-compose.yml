@@ -73,7 +73,7 @@ services:
       - RESTIC_FORGET_ARGS=--prune --keep-last 10 --keep-daily 1
       - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-      - MAILX_ARGS=-r '${RESTIC_SEND_MAIL}' -s 'Result of the last restic backup run' -S smtp='${NEXTCLOUD_SMTP_HOST}:${NEXTCLOUD_SMTP_PASSWORD}' -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user='${NEXTCLOUD_SMTP_NAME}' -S smtp-auth-password='${NEXTCLOUD_SMTP_PASSWORD}' '${RESTIC_DEST_MAIL}'
+      - MAILX_ARGS=-r '${RESTIC_SEND_MAIL}' -s 'Result of the last restic backup run' -S smtp='${NEXTCLOUD_SMTP_HOST}:${NEXTCLOUD_SMTP_PORT}' -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user='${NEXTCLOUD_SMTP_NAME}' -S smtp-auth-password='${NEXTCLOUD_SMTP_PASSWORD}' '${RESTIC_DEST_MAIL}'
 
 volumes:
   db:
