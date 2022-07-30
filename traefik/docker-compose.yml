@@ -17,7 +17,6 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - ${TRAEFIK_DATA_DIR}:/etc/traefik
-      - ${TRAEFIK_DATA_DIR}/ssl:/etc/ssl
       - ${TRAEFIK_CONFIG}:/etc/traefik/traefik.toml
     labels:
       - "traefik.enable=true"

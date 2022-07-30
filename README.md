@@ -1,14 +1,14 @@
-# Configuration of Mieux Voter server
+# Configuration of my self-hosted server
 
 
-Machine is running on Ubuntu 22.04.
+Machine is running on Ubuntu 20.04.
 
 ## Installation
 
 ```bash
 sudo apt install make
 mkdir src
-git clone https://github.com/MieuxVoter/dotfiles
+git clone https://github.com/guhur/dotfiles
 cd dotfiles
 make docker
 
@@ -19,16 +19,17 @@ make neovim
 sudo apt install libfuse-dev
 ```
 
-## Launching SWAG server
+## Traefik
 
-SWAG = Docker + nginx + let's encrypt + fail2ban + plenty of configuration files.
+Copy the `traefik/.env` file anywhere else (it could into your `/etc/` or `traefik/.env.local`). 
 
-Copy `swag/.env` into your own environment file (e.g. `.env.local`). Then, create files in `$SWAG_CONFIG_DIR` corresponding to fill missing fields in `swag/docker-compose.yaml` starting with `/run/docker-swag/`.
+Install Docker, and launch the container:
 
 ```bash
-cd swag
-docker compose --env-file /path/to/your/.env up -d 
+cd traefik
+docker compose --env-file /path/to/your/env up -d 
 ```
+
 
 ## Mautic
 
@@ -41,44 +42,49 @@ cd mautic
 docker compose --env-file /path/to/your/env up -d 
 ```
 
-Then, copy the config file to your nginx proxy-confs folder:
+## Plex
+
+https://howto.wared.fr/plex-docker-traefik-ubuntu/
 
 ```bash
-cp $PWD/mautic.subdomain.conf $SWAG_CONFIG_DIR/nginx/nginx/proxy-confs/
+sudo adduser plex
+sudo adduser plex docker
+sudo su plex
+cd
+
 ```
 
-Restart the SWAG container:
+## Nextcloud
+
+Copy the `nextcloud/.env` file anywhere else (it could into your `/etc/` or `.env.local`). 
+
+Launch the container:
 
 ```bash
-cd swag
-docker compose --env-file /path/to/swag/env/file restart
-```
-
-## Authelia
-
-Copy the `authelia/.env` file anywhere else (it could into your `/etc/` or `.env.local`). 
-
-Install Docker, and launch the container:
-
-```bash
-cd authelia
+cd nextcloud
 docker compose --env-file /path/to/your/env up -d 
 ```
 
-Then, move the config file of your nginx proxy-confs folder:
+# Collabora (Nextcloud)
+
+Copy the `collabora/.env` file anywhere else (it could into your `/etc/` or `.env.local`). 
+
+Launch the container:
 
 ```bash
-cd $SWAG_CONFIG_DIR/nginx/nginx/proxy-confs/
-cp authelia.subdomain.conf.sample authelia.subdomain.conf
+cd collabora
+docker compose --env-file /path/to/your/env up -d 
+```
+Then, on your Nextcloud apps, disable "Built-in CODE" and enable "Nextcloud Office". Then, in your settings, on the "Nextcloud Office" pan, put the collabora FQDN.
+
+#### ℹ️  Debug
+ 
+In `collobora/docker-compose.yml`, add:
+
+```
+    ports:
+      - "9980:9980"
 ```
 
-Restart the SWAG container:
+Restart the container and visit: `http://<your-local-ip>:9980`. You should obtain a "OK" message.
 
-```bash
-cd swag
-docker compose --env-file /path/to/swag/env/file restart
-```
-
-## Dynamic DNS
-
-Install `ddclient` and modify `/etc/ddclient.conf` as indicated by your DNS.
