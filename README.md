@@ -88,3 +88,22 @@ In `collobora/docker-compose.yml`, add:
 
 Restart the container and visit: `http://<your-local-ip>:9980`. You should obtain a "OK" message.
 
+# Pontoon
+
+Make sure you loaded submodules:
+
+```bash
+git submodule update --init --recursive
+```
+
+Copy the `pontoon/pontoon/docker/config/server.env.template` file as `pontoon/ pontoon/.env`. Edit its values. 
+Similarly, copy `pontoon/.env` as `pontoon/.env.local` and edit it. Add the same postgress password.
+
+Launch the container:
+
+```bash
+cd pontoon
+docker compose --env-file pontoon/.env up -d 
+```
+Then, on your Nextcloud apps, disable "Built-in CODE" and enable "Nextcloud Office". Then, in your settings, on the "Nextcloud Office" pan, put the collabora FQDN.
+

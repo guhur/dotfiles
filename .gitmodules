@@ -1,3 +1,6 @@
 [submodule "docker/docker"]
 	path = docker/bbb
 	url = https://github.com/bigbluebutton/docker.git
+[submodule "pontoon/pontoon"]
+	path = pontoon/pontoon
+	url = git@github.com:mozilla/pontoon.git
