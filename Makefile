@@ -1,11 +1,11 @@
 OS=linux
 ARCH=amd64
 
-INSTALL_DIR=~
+INSTALL_DIR=$(shell readlink -f ~)
 LOCAL_DIR=$(INSTALL_DIR)/.local
 
 GITHUB_VERSION = 2.13.0
-ZSH_VERSION = 5.8
+ZSH_VERSION = 5.9
 TMUX_VERSION = 3.2a
 NODE_VERSION = 16.12.0
 GO_VERSION=1.17.6
@@ -87,7 +87,7 @@ zsh:
 		tar -xzvf zsh-$(ZSH_VERSION).tar.gz && \
 		cd zsh-zsh-$(ZSH_VERSION) && \
 		./Util/preconfig && \
-		./configure --prefix=$(LOCAL_DIR)/.local && \
+		./configure --prefix=$(LOCAL_DIR) && \
 		make -j 5 && \
 		make install && \
 		rm zsh-zsh-$(ZSH_VERSION); \
@@ -127,7 +127,8 @@ ripgrep:
 	rm -r ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz ripgrep-13.0.0-x86_64-unknown-linux-musl
 
 docker:
-	curl -fsSL https://get.docker.com -o get-docker.sh 77&& \
+	curl -fsSL https://get.docker.com -o get-docker.sh && \
+	chmod a+x get-docker.sh && \
 	./get-docker.sh && \
 	sudo groupadd docker && \
 	sudo usermod -aG docker $(bash whoami) && \

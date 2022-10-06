@@ -1,0 +1,30 @@
+---
+- name: Install development server
+  hosts: webservers
+  remote_user: root
+
+  tasks:
+  - name: Install a list of packages for maintenance
+    ansible.builtin.apt:
+      pkg:
+	- zsh
+	- tmux
+	- neovim
+	- libfuse2
+	- fzf
+	- ripgrep
+        - node
+      state: latest
+      update_cache: yes
+
+  - name: Clone repo dotfiles
+    ansible.builtin.git:
+      repo: 'https://github.com/guhur/dotfiles.git'
+      dest: /src/dotfiles
+      clone: yes
+      update: yes
+
+  - name: Install config files
+    shell: make install
+    ignore_errors: False
+    register: result
