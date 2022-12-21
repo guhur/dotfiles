@@ -43,6 +43,9 @@ augroup END
 autocmd Filetype python setlocal expandtab tabstop=4 shiftwidth=4
 autocmd Filetype javascript setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 autocmd Filetype javascriptreact setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+autocmd Filetype typescript setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+autocmd Filetype typescriptreact setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+autocmd Filetype vue setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 autocmd Filetype jsx setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 autocmd Filetype php setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
 autocmd Filetype css setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
