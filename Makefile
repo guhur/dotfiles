@@ -100,10 +100,7 @@ npm:
 
 node:
 	if ! command -v node %> /dev/null; then \
-		curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash && \
-		chmod a+x nvm.sh && \
-		./nvm.sh && \
-		rm nvm.sh && \
+		curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash \
 		NVM_NODEJS_ORG_MIRROR=http://nodejs.org/dist nvm install node; \
 	fi
 

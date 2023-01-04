@@ -45,7 +45,7 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'fannheyward/coc-pyright', {'do': 'yarn install --frozen-lockfile'}
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-
+Plug 'github/copilot.vim'
 
 endif
 
@@ -62,3 +62,10 @@ if has('nvim')
 endif
 
 
+" Configure Github Copilot
+let g:copilot_filetypes = { 
+			\ 'yaml': v:true,
+			\ 'yml': v:true,
+			\ }
+imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
+let g:copilot_no_tab_map = v:true
