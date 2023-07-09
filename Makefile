@@ -3,6 +3,7 @@ ARCH=amd64
 
 INSTALL_DIR=$(shell readlink -f ~)
 LOCAL_DIR=$(INSTALL_DIR)/.local
+CONFIG_DIR=$(INSTALL_DIR)/.config
 
 GITHUB_VERSION = 2.13.0
 ZSH_VERSION = 5.9
@@ -10,7 +11,7 @@ TMUX_VERSION = 3.2a
 NODE_VERSION = 16.12.0
 GO_VERSION=1.17.6
 SINGULARITY_VERSION=3.9.4
-NEOVIM_VERSION=0.7.0
+NEOVIM_VERSION=0.9.1
 
 all: install update clean
 .PHONY: all
@@ -134,3 +135,10 @@ docker:
 
 fzf:
 	sudo apt-get install fzf
+
+brew:
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && \
+	mkdir -vp $(CONFIG_DIR)/zsh && \
+	(echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> $(CONFIG_DIR)/zsh/mac.zsh && \
+	source $(CONFIG_DIR)/zsh/mac.zsh
+
