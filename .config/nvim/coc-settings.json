@@ -11,5 +11,15 @@
     "typescriptreact",
     "json"
   ],
-  "coc.preferences.extensionUpdateCheck": "daily"
+  "coc.preferences.extensionUpdateCheck": "daily",
+  "languageserver": {
+  "ruff-lsp": {
+    "command": "ruff-lsp",
+    "filetypes": ["python"]
+  }
+},
+"coc.source.vimtex.filetypes": [
+  "tex",
+  "plaintex"
+]
 }

@@ -3,7 +3,7 @@
 	email = pierre-louis.guhur@laposte.net
 	username = guhur
 [core]
-	editor = vim
+	editor = nvim
 	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
 	excludesfile = ~/.gitignore
 	autocrlf = false
