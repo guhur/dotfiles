@@ -17,17 +17,6 @@ return require('packer').startup(function()
   use 'neoclide/coc-prettier'
 
   local home = vim.fn.expand("$HOME")
- -- use({
- --   "jackMort/ChatGPT.nvim",
- --     config = function()
- --       require("chatgpt").setup()
- --     end,
- --     requires = {
- --       "MunifTanjim/nui.nvim",
- --       "nvim-lua/plenary.nvim",
- --       "nvim-telescope/telescope.nvim"
- --     }
- -- })
 
   use 'nvim-lua/popup.nvim'
   use 'nvim-lua/plenary.nvim'
@@ -110,10 +99,6 @@ return require('packer').startup(function()
   nmap <silent> gy <Plug>(coc-type-definition)
   nmap <silent> gi <Plug>(coc-implementation)
   nmap <silent> gr <Plug>(coc-references)
-
-  " Configure ChatGPT
-  " map <F4> :ChatGPTEditWithInstructions<CR>
-
 
   ]]
 end)
