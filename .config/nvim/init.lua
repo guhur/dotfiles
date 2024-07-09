@@ -1,5 +1,8 @@
 
 return require('packer').startup(function()
+  -- set leader key to Space
+  vim.g.mapleader = ' '
+
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
   -- Vim plugins
@@ -11,7 +14,6 @@ return require('packer').startup(function()
   use 'vim-scripts/YankRing.vim'
   -- Neovim plugins
   use {'neoclide/coc.nvim', branch = 'release'}
-  use {'fannheyward/coc-pyright', run = 'yarn install --frozen-lockfile'}
   use 'nvim-telescope/telescope.nvim'
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make'}
   use 'neoclide/coc-prettier'
@@ -21,12 +23,42 @@ return require('packer').startup(function()
   use 'nvim-lua/popup.nvim'
   use 'nvim-lua/plenary.nvim'
   use 'neovim/nvim-lspconfig'
+  -- Configure `ruff-lsp`.
+  -- See: https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#ruff_lsp
+  -- For the default config, along with instructions on how to customize the settings
+  require('lspconfig').ruff_lsp.setup {
+    init_options = {
+      settings = {
+        -- Activate the fixer
+        args = { '--fix' }
+      }
+    }
+  }
   use 'kyazdani42/nvim-web-devicons'
   use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
 
-  -- set leader key to Space
-  vim.g.mapleader = ' '
-  
+  -- Configure ALE
+  use 'dense-analysis/ale'
+  vim.g.ale_linters = {
+    python = {'mypy', 'flake8'}
+  }
+ vim.g.ale_python_flake8_options = '--max-line-length=89 --ignore=E265,E266,E501,E203,W503,E741'
+  vim.g.ale_fixers = {
+     python = {'black', 'autoimport', 'pycln', 'remove_trailing_lines', 'trim_whitespace'},
+  }
+  vim.g.ale_python_auto_poetry = 1
+  vim.g.ale_fix_on_save = 1
+  vim.cmd [[
+    " Jump to the next error
+    nnoremap <silent> <leader>n :ALENext<CR>
+    " Jump to the previous error
+    nnoremap <silent> <leader>p :ALEPrevious<CR>
+    " Highlight errors with underlines
+    " highlight ALEError textprop=underline
+    " Displaying Errors in a Floating Window
+    nnoremap <silent> <leader>e :lua vim.diagnostic.open_float(nil, {focus=false})<CR>
+  ]]
+
   -- set mouse to scroll
   vim.o.mouse = 'a'
   
@@ -102,3 +134,4 @@ return require('packer').startup(function()
 
   ]]
 end)
+
