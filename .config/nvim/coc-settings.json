@@ -1,17 +1,19 @@
 {
   "python.formatting.provider": "black",
   "python.linting.mypyEnabled": true,
+  "python.linting.mypyArgs": ["--no-incremental", "--cache-dir=/tmp/mypy_cache", "--no-follow-imports"],
+  "python.linting.mypyTimeout": 300000,
   "python.jediEnabled": true,
   "python.linting.pylintEnabled": false,
+  "languageserver": {
+    "ruff": {
+      "command": "ruff",
+      "args": ["server"],
+      "filetypes": ["python"]
+    }
+  },
   "coc.preferences.formatOnSaveFiletypes": [
-    "python",
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact",
-    "scss",
-    "svg",
-    "json"
+    "python"
   ],
   "coc.preferences.extensionUpdateCheck": "daily",
   "coc.source.vimtex.filetypes": ["tex", "plaintex"]
