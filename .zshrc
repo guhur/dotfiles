@@ -249,3 +249,10 @@ fi
     source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 [ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && \
     source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# Autosuggestions keybindings (vi-mode compatible)
+bindkey '^f' forward-char                    # Ctrl+F: accept one char
+bindkey '^e' end-of-line                     # Ctrl+E: accept all
+bindkey '^[[C' forward-char                  # Right arrow: accept one char
+bindkey '^[f' forward-word                   # Alt+F: accept one word
+bindkey '^[^[[C' forward-word                # Alt+Right: accept one word
