@@ -168,6 +168,7 @@ alias gaa='git add --all'
 alias gb='git branch'
 alias gc='git commit -v'
 alias gcam='git commit -am'
+alias gcma='git commit -am'  # alias for gcam
 alias gcmsg='git commit -m'
 alias gco='git checkout'
 alias gd='git diff'
