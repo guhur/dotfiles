@@ -2,11 +2,12 @@
 # Get editor completions based on the config schema
 "$schema" = 'https://starship.rs/config-schema.json'
 
-# Simpler format: directory + git only
+# Simpler format: directory + git + duration
 format = """
 $directory\
 $git_branch\
 $git_status\
+$cmd_duration\
 $character"""
 
 # Disable noisy modules
@@ -43,7 +44,13 @@ style = "bold yellow"
 truncation_length = 2
 truncate_to_repo = true
 
-# Prompt character
+# Command duration - show if > 2s
+[cmd_duration]
+min_time = 2000
+format = "took [$duration]($style) "
+style = "bold yellow"
+
+# Prompt character - shows error code
 [character]
 success_symbol = "[❯](bold green)"
 error_symbol = "[❯](bold red)"

@@ -185,8 +185,17 @@ alias gstp='git stash pop'
 
 
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# FZF - Lazy loading
 export FZF_DEFAULT_COMMAND='fdfind --type f'
+if [ -f ~/.fzf.zsh ]; then
+    _lazy_fzf() {
+        unfunction _lazy_fzf
+        source ~/.fzf.zsh
+        zle fzf-history-widget
+    }
+    zle -N _lazy_fzf
+    bindkey '^R' _lazy_fzf
+fi
 
 # NVM - Lazy loading for faster shell startup
 export NVM_DIR="$HOME/.nvm"
@@ -215,8 +224,6 @@ function pfwd {
   done  
 }
 
-alias gcma="git commit -am"
-
 # Scaleway CLI - lazy load autocomplete
 if command -v scw &> /dev/null; then
     scw() {
@@ -235,3 +242,9 @@ if [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]]; then
         sdk "$@"
     }
 fi
+
+# Zsh plugins (syntax-highlighting must be last)
+[ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && \
+    source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+[ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && \
+    source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

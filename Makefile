@@ -29,6 +29,7 @@ update:
 	ln -sf ${PWD}/.config/nvim ${INSTALL_DIR}/.config
 	ln -sf ${PWD}/.config/mypy ${INSTALL_DIR}/.config
 	ln -sf ${PWD}/.config/neomutt ${INSTALL_DIR}/.config
+	ln -sf ${PWD}/.config/starship.toml ${INSTALL_DIR}/.config
 	ln -sf ${PWD}/.pdbrc $(INSTALL_DIR)
 	ln -sf ${PWD}/.pylintrc $(INSTALL_DIR)
 	ln -sf ${PWD}/.vim $(INSTALL_DIR)
