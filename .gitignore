@@ -4,3 +4,4 @@
 bin
 .env.local
 .DS_Store
+.claude/

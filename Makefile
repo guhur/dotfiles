@@ -21,7 +21,6 @@ help :           ## Show this help.
 	
 install: clean update
 	git clone https://github.com/gpakosz/.tmux.git ${INSTALL_DIR}/.tmux
-	git clone https://github.com/ohmyzsh/ohmyzsh.git ${INSTALL_DIR}/.oh-my-zsh
 
 update: 
 	mkdir -p $(INSTALL_DIR)/.config
@@ -55,7 +54,6 @@ clean:
 	rm -f $(INSTALL_DIR)/.mrconfig
 	rm -f $(INSTALL_DIR)/.gitconfig
 	rm -f $(INSTALL_DIR)/.tmux.conf.local
-	rm -rf $(INSTALL_DIR)/.oh-my-zsh
 	rm -rf $(INSTALL_DIR)/.tmux
 
 neovim:
@@ -135,6 +133,9 @@ docker:
 
 fzf:
 	sudo apt-get install fzf
+
+starship:
+	curl -sS https://starship.rs/install.sh | sh
 
 brew:
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && \

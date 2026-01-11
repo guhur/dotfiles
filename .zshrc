@@ -75,29 +75,114 @@ if [ "$USE_PYENV" = true ]; then
 fi
 
 
-# ZSH
+# ZSH - Minimal Configuration (no Oh My Zsh)
 # -----------------------------------------------------------------------------
-export ZSH=$HOME/.oh-my-zsh
-ZSH_THEME="robbyrussell"
-COMPLETION_WAITING_DOTS="true"
-HIST_STAMPS="dd.mm.yyyy"
 
-plugins=(
-  git
-  vi-mode
-)
-source $ZSH/oh-my-zsh.sh
-local ret_status="%(?:%{$fg_bold[green]%}%m:%{$fg_bold[red]%}%m)"
-PROMPT='${ret_status} %{$fg[cyan]%}%c%{$reset_color%} $(git_prompt_info)'
+# History settings
+HISTFILE=~/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
+setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format
+setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits
+setopt SHARE_HISTORY             # Share history between all sessions
+setopt HIST_IGNORE_DUPS          # Do not record an event that was just recorded again
+setopt HIST_IGNORE_ALL_DUPS      # Delete an old recorded event if a new event is a duplicate
+setopt HIST_IGNORE_SPACE         # Do not record an event starting with a space
+setopt HIST_SAVE_NO_DUPS         # Do not write a duplicate event to the history file
+
+# Directory navigation
+setopt AUTO_CD                   # cd by typing directory name
+setopt AUTO_PUSHD                # Push directory onto stack
+setopt PUSHD_IGNORE_DUPS         # Don't push duplicates
+setopt PUSHD_SILENT              # Don't print directory stack
+
+# Completion system - only rebuild cache once per day
+autoload -Uz compinit
+if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+    compinit
+else
+    compinit -C
+fi
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'  # Case insensitive
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+
+# Vi mode
+bindkey -v
+export KEYTIMEOUT=1              # Reduce delay when switching modes
+
+# Better vi mode keybindings
+bindkey '^P' up-line-or-history
+bindkey '^N' down-line-or-history
+bindkey '^?' backward-delete-char
+bindkey '^h' backward-delete-char
+bindkey '^w' backward-kill-word
+bindkey '^r' history-incremental-search-backward
+bindkey '^a' beginning-of-line
+bindkey '^e' end-of-line
+
+# Colors
+autoload -U colors && colors
+
+# Git prompt function (minimal replacement for oh-my-zsh git plugin)
+git_prompt_info() {
+    local branch
+    branch=$(git symbolic-ref --short HEAD 2>/dev/null) || return
+    local dirty=""
+    if [[ -n $(git status --porcelain 2>/dev/null) ]]; then
+        dirty="%{$fg[yellow]%}✗"
+    fi
+    echo "%{$fg_bold[blue]%}git:(%{$fg[red]%}${branch}%{$fg_bold[blue]%})%{$reset_color%}${dirty} "
+}
+
+# Use Starship if available, otherwise use custom prompt
+if command -v starship &> /dev/null; then
+    eval "$(starship init zsh)"
+else
+    # Custom prompt similar to robbyrussell
+    setopt PROMPT_SUBST
+    local ret_status="%(?:%{$fg_bold[green]%}%m:%{$fg_bold[red]%}%m)"
+    PROMPT='${ret_status} %{$fg[cyan]%}%c%{$reset_color%} $(git_prompt_info)'
+fi
+
+# Git aliases (from oh-my-zsh git plugin - most common ones)
+alias g='git'
+alias ga='git add'
+alias gaa='git add --all'
+alias gb='git branch'
+alias gc='git commit -v'
+alias gcmsg='git commit -m'
+alias gco='git checkout'
+alias gd='git diff'
+alias gf='git fetch'
+alias gl='git pull'
+alias glog='git log --oneline --decorate --graph'
+alias gp='git push'
+alias gst='git status'
+alias gsw='git switch'
 
 
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export FZF_DEFAULT_COMMAND='fdfind --type f'
 
+# NVM - Lazy loading for faster shell startup
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+    # Add node to PATH without loading nvm (use default version)
+    [ -d "$NVM_DIR/versions/node" ] && PATH="$NVM_DIR/versions/node/$(ls -1 $NVM_DIR/versions/node | tail -1)/bin:$PATH"
+
+    # Lazy load nvm when first called
+    nvm() {
+        unset -f nvm node npm npx
+        \. "$NVM_DIR/nvm.sh"
+        [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+        nvm "$@"
+    }
+    node() { unset -f nvm node npm npx; \. "$NVM_DIR/nvm.sh"; node "$@"; }
+    npm() { unset -f nvm node npm npx; \. "$NVM_DIR/nvm.sh"; npm "$@"; }
+    npx() { unset -f nvm node npm npx; \. "$NVM_DIR/nvm.sh"; npx "$@"; }
+fi
 
 
 function pfwd {
@@ -110,9 +195,17 @@ function pfwd {
 
 alias gcma="git commit -am"
 
-# Scaleway CLI autocomplete initialization.
-eval "$(scw autocomplete script shell=zsh)"
+# Scaleway CLI autocomplete (without extra compinit call)
+if command -v scw &> /dev/null; then
+    eval "$(scw autocomplete script shell=zsh | grep -v 'compinit')"
+fi
 
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+# SDKMAN - Lazy loading
 export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+if [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]]; then
+    sdk() {
+        unset -f sdk
+        source "$SDKMAN_DIR/bin/sdkman-init.sh"
+        sdk "$@"
+    }
+fi

@@ -458,7 +458,7 @@ vim.api.nvim_set_keymap("v", "<leader>ca", "<cmd>lua vim.lsp.buf.range_code_acti
 vim.api.nvim_set_keymap("n", "<leader>e", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
 
 -- Python specific commands
-vim.api.nvim_set_keymap("n", "<leader>my", "<cmd>RunMypy<CR>", opts)
+vim.api.nvim_set_keymap("n", "<leader>ty", "<cmd>RunTy<CR>", opts)
 vim.api.nvim_set_keymap("n", "<leader>rf", "<cmd>RuffFormat<CR>", opts)
 
 -- Restart LSP
@@ -521,7 +521,42 @@ vim.api.nvim_create_autocmd("BufWritePre", {
         return client.name == "ruff" or client.name == "pylsp" 
       end
     })
-    -- Don't run mypy on save for large projects to prevent multiple processes
+  end,
+})
+
+-- Run ty type checker automatically on save for Python files
+vim.api.nvim_create_autocmd("BufWritePost", {
+  pattern = { "*.py" },
+  callback = function()
+    -- Run ty check asynchronously via uvx
+    vim.fn.jobstart({ "uvx", "ty", "check" }, {
+      on_exit = function(_, code)
+        if code ~= 0 then
+          vim.api.nvim_echo({{"ty found type errors", "WarningMsg"}}, false, {})
+        end
+      end,
+      on_stdout = function(_, data)
+        if data and #data > 0 then
+          local lines = {}
+          for _, line in ipairs(data) do
+            if line ~= "" then
+              table.insert(lines, line)
+            end
+          end
+          if #lines > 0 then
+            vim.schedule(function()
+              vim.fn.setqflist({}, 'r', {
+                title = 'ty Results',
+                lines = lines
+              })
+              vim.cmd("copen")
+            end)
+          end
+        end
+      end,
+      stdout_buffered = true,
+      stderr_buffered = true,
+    })
   end,
 })
 
@@ -544,25 +579,22 @@ vim.api.nvim_create_user_command("RuffFormat", function()
   end, 500)
 end, {})
 
--- Run mypy only when manually triggered for large projects
-vim.api.nvim_create_user_command("RunMypy", function()
-  local file = vim.fn.expand("%:p")
-  local bufnr = vim.api.nvim_get_current_buf()
-  
-  vim.api.nvim_echo({{"Running dmypy with uva...", ""}}, false, {})
-  
-  -- Run dmypy asynchronously using uva
-  vim.fn.jobstart({ "uva", "dmypy", "run", "--", "." }, {
+-- Run ty type checker when manually triggered
+vim.api.nvim_create_user_command("RunTy", function()
+  vim.api.nvim_echo({{"Running ty check...", ""}}, false, {})
+
+  -- Run ty check asynchronously via uvx
+  vim.fn.jobstart({ "uvx", "ty", "check" }, {
     on_exit = function(_, code)
       if code ~= 0 then
-        vim.api.nvim_echo({{"Dmypy found type errors", "WarningMsg"}}, false, {})
+        vim.api.nvim_echo({{"ty found type errors", "WarningMsg"}}, false, {})
       else
-        vim.api.nvim_echo({{"Dmypy: No type errors found", ""}}, false, {})
+        vim.api.nvim_echo({{"ty: No type errors found", ""}}, false, {})
       end
     end,
     on_stdout = function(_, data)
       if data and #data > 0 then
-        -- Display dmypy output in quickfix
+        -- Display ty output in quickfix
         local lines = {}
         for _, line in ipairs(data) do
           if line ~= "" then
@@ -572,7 +604,7 @@ vim.api.nvim_create_user_command("RunMypy", function()
         if #lines > 0 then
           vim.schedule(function()
             vim.fn.setqflist({}, 'r', {
-              title = 'Dmypy Results',
+              title = 'ty Results',
               lines = lines
             })
             vim.cmd("copen")
@@ -581,106 +613,6 @@ vim.api.nvim_create_user_command("RunMypy", function()
       end
     end,
     stdout_buffered = true,
-    stderr_buffered = true,
-  })
-end, {})
-
--- Dmypy daemon management commands
-vim.api.nvim_create_user_command("DmypyStart", function()
-  vim.api.nvim_echo({{"Starting dmypy daemon...", ""}}, false, {})
-  local error_lines = {}
-  vim.fn.jobstart({ "uva", "dmypy", "start" }, {
-    on_exit = function(_, code)
-      if code == 0 then
-        vim.api.nvim_echo({{"Dmypy daemon started", ""}}, false, {})
-      else
-        vim.api.nvim_echo({{"Failed to start dmypy daemon", "ErrorMsg"}}, false, {})
-        if #error_lines > 0 then
-          vim.schedule(function()
-            vim.api.nvim_echo({{table.concat(error_lines, "\n"), "ErrorMsg"}}, false, {})
-          end)
-        end
-      end
-    end,
-    on_stderr = function(_, data)
-      if data then
-        for _, line in ipairs(data) do
-          if line ~= "" then
-            table.insert(error_lines, line)
-          end
-        end
-      end
-    end,
-    on_stdout = function(_, data)
-      if data then
-        for _, line in ipairs(data) do
-          if line ~= "" then
-            vim.schedule(function()
-              vim.api.nvim_echo({{line, ""}}, false, {})
-            end)
-          end
-        end
-      end
-    end,
-    stderr_buffered = true,
-    stdout_buffered = true,
-  })
-end, {})
-
-vim.api.nvim_create_user_command("DmypyStop", function()
-  vim.api.nvim_echo({{"Stopping dmypy daemon...", ""}}, false, {})
-  local error_lines = {}
-  vim.fn.jobstart({ "uva", "dmypy", "stop" }, {
-    on_exit = function(_, code)
-      if code == 0 then
-        vim.api.nvim_echo({{"Dmypy daemon stopped", ""}}, false, {})
-      else
-        vim.api.nvim_echo({{"Failed to stop dmypy daemon", "ErrorMsg"}}, false, {})
-        if #error_lines > 0 then
-          vim.schedule(function()
-            vim.api.nvim_echo({{table.concat(error_lines, "\n"), "ErrorMsg"}}, false, {})
-          end)
-        end
-      end
-    end,
-    on_stderr = function(_, data)
-      if data then
-        for _, line in ipairs(data) do
-          if line ~= "" then
-            table.insert(error_lines, line)
-          end
-        end
-      end
-    end,
-    stderr_buffered = true,
-  })
-end, {})
-
-vim.api.nvim_create_user_command("DmypyRestart", function()
-  vim.api.nvim_echo({{"Restarting dmypy daemon...", ""}}, false, {})
-  local error_lines = {}
-  vim.fn.jobstart({ "uva", "dmypy", "restart" }, {
-    on_exit = function(_, code)
-      if code == 0 then
-        vim.api.nvim_echo({{"Dmypy daemon restarted", ""}}, false, {})
-      else
-        vim.api.nvim_echo({{"Failed to restart dmypy daemon", "ErrorMsg"}}, false, {})
-        if #error_lines > 0 then
-          vim.schedule(function()
-            vim.api.nvim_echo({{table.concat(error_lines, "\n"), "ErrorMsg"}}, false, {})
-          end)
-        end
-      end
-    end,
-    on_stderr = function(_, data)
-      if data then
-        for _, line in ipairs(data) do
-          if line ~= "" then
-            table.insert(error_lines, line)
-          end
-        end
-      end
-    end,
     stderr_buffered = true,
   })
 end, {})
@@ -695,4 +627,4 @@ vim.diagnostic.config({
   },
 })
 
--- We're using CoC for mypy configuration instead of LSP/pylsp
+-- Type checking: use :RunTy to run ty (replaces mypy)
