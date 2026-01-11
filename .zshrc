@@ -116,8 +116,9 @@ function _lazy_compinit {
     zstyle ':completion:*' menu select
     zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
     zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-    bindkey '^I' expand-or-complete
-    zle expand-or-complete
+    # Rebind tab to default completion and trigger it
+    bindkey '^I' complete-word
+    zle complete-word
 }
 zle -N _lazy_compinit
 bindkey '^I' _lazy_compinit
