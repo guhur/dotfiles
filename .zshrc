@@ -96,16 +96,31 @@ setopt AUTO_PUSHD                # Push directory onto stack
 setopt PUSHD_IGNORE_DUPS         # Don't push duplicates
 setopt PUSHD_SILENT              # Don't print directory stack
 
-# Completion system - only rebuild cache once per day
-autoload -Uz compinit
-if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
-    compinit
-else
-    compinit -C
-fi
-zstyle ':completion:*' menu select
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'  # Case insensitive
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+# Completion system - lazy loaded on first tab
+typeset -a _deferred_compdefs
+compdef() { _deferred_compdefs+=("$@") }
+
+function _lazy_compinit {
+    unfunction _lazy_compinit compdef
+    autoload -Uz compinit
+    if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+        compinit
+    else
+        compinit -C
+    fi
+    # Apply deferred compdefs
+    for def in "${_deferred_compdefs[@]}"; do
+        compdef $def
+    done
+    unset _deferred_compdefs
+    zstyle ':completion:*' menu select
+    zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+    zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+    bindkey '^I' expand-or-complete
+    zle expand-or-complete
+}
+zle -N _lazy_compinit
+bindkey '^I' _lazy_compinit
 
 # Vi mode
 bindkey -v
@@ -145,12 +160,13 @@ else
     PROMPT='${ret_status} %{$fg[cyan]%}%c%{$reset_color%} $(git_prompt_info)'
 fi
 
-# Git aliases (from oh-my-zsh git plugin - most common ones)
+# Git aliases (from oh-my-zsh git plugin)
 alias g='git'
 alias ga='git add'
 alias gaa='git add --all'
 alias gb='git branch'
 alias gc='git commit -v'
+alias gcam='git commit -am'
 alias gcmsg='git commit -m'
 alias gco='git checkout'
 alias gd='git diff'
@@ -158,8 +174,13 @@ alias gf='git fetch'
 alias gl='git pull'
 alias glog='git log --oneline --decorate --graph'
 alias gp='git push'
+alias gr='git remote'
+alias grv='git remote -v'
+alias gs='git status'
 alias gst='git status'
 alias gsw='git switch'
+alias gsta='git stash push'
+alias gstp='git stash pop'
 
 
 
@@ -195,9 +216,13 @@ function pfwd {
 
 alias gcma="git commit -am"
 
-# Scaleway CLI autocomplete (without extra compinit call)
+# Scaleway CLI - lazy load autocomplete
 if command -v scw &> /dev/null; then
-    eval "$(scw autocomplete script shell=zsh | grep -v 'compinit')"
+    scw() {
+        unfunction scw
+        eval "$(command scw autocomplete script shell=zsh | grep -v 'compinit')"
+        command scw "$@"
+    }
 fi
 
 # SDKMAN - Lazy loading
