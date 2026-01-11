@@ -1,10 +1,14 @@
 {
-  "python.formatting.provider": "black",
+  "python.formatting.provider": "ruff",
   "python.linting.mypyEnabled": true,
-  "python.linting.mypyArgs": ["--no-incremental", "--cache-dir=/tmp/mypy_cache", "--no-follow-imports"],
+  "python.linting.mypyArgs": ["run", "mypy", "--no-incremental", "--cache-dir=/tmp/mypy_cache", "--no-follow-imports"],
   "python.linting.mypyTimeout": 300000,
-  "python.jediEnabled": true,
   "python.linting.pylintEnabled": false,
+  "python.jediEnabled": true,
+  "python.linting.mypyPath": "uva",
+  "python.linting.disableWorkspaceSettings": true,
+  "python.linting.mypyMaxNumberOfProblems": 100,
+  "python.linting.debounce": 1000,
   "languageserver": {
     "ruff": {
       "command": "ruff",

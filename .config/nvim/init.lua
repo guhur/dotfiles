@@ -41,87 +41,60 @@ vim.o.encoding = "UTF-8"
 
 vim.g.python3_host_prog = '/opt/homebrew/bin/python3'
 
+
+
+-- Lazy.nvim setup
+
 -- Lazy.nvim setup
 require("lazy").setup({
 
-  -- CoC for advanced IDE features and language server integration
-  {
-    "neoclide/coc.nvim",
-    branch = "release"
-  },
-
-  -- Mason setup
+   -- Mason setup
   {
     "williamboman/mason.nvim",
     config = function()
       require("mason").setup()
     end
   },
-
-  {
-    "williamboman/mason-lspconfig.nvim",
-    dependencies = { "williamboman/mason.nvim" },
-    config = function()
-      require("mason-lspconfig").setup({
-        ensure_installed = { "ts_ls", "eslint", "ruff" }
-      })
-    end
-  },
+  
+  -- Note: mason-lspconfig.nvim was removed due to compatibility issues
+  -- Install LSP servers manually with :Mason and then search for:
+  -- typescript-language-server, eslint-lsp, ruff, pyright
 
   -- LSP Configuration
   {
     'neovim/nvim-lspconfig',
-    dependencies = { "williamboman/mason-lspconfig.nvim" },
+    dependencies = { "williamboman/mason.nvim", "hrsh7th/cmp-nvim-lsp" },
     config = function()
-      -- Define capabilities once for use by LSP servers
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-      -- Ruff native LSP setup
+      -- Set up lspconfig with nvim-cmp capabilities
+      local capabilities = require('cmp_nvim_lsp').default_capabilities()
+      
+      -- Ruff LSP setup
       require("lspconfig").ruff.setup({
-        -- Setup for the new native 'ruff server'
-        -- Based on latest migration guide
-        on_attach = function(client, bufnr)
-          -- Enable formatting
-          if client.server_capabilities.documentFormattingProvider then
-            -- Enable auto-formatting on save for Python files
-            vim.api.nvim_create_autocmd("BufWritePre", {
-              buffer = bufnr,
-              callback = function()
-                vim.lsp.buf.format({ 
-                  bufnr = bufnr,
-                  filter = function(c) return c.name == "ruff" end
-                })
-              end,
-            })
-          end
-        end
+        capabilities = capabilities
       })
-
-      -- Python LSP (pylsp) setup
-      require("lspconfig").pylsp.setup({
+      
+      -- Pyright setup - using Ruff exclusively for linting, formatting, and organizing imports
+      require("lspconfig").pyright.setup({
+        capabilities = capabilities,
         settings = {
-          pylsp = {
-            plugins = {
-              mypy = {
-                enabled = false,  -- Disabled to prevent duplicate mypy workers
-              }
+          pyright = {
+            disableOrganizeImports = true,
+          },
+          python = {
+            analysis = {
+              ignore = { '*' },
             }
           }
         }
       })
 
-      -- TypeScript LSP setup (ts_ls)
       require("lspconfig").ts_ls.setup({
         capabilities = capabilities,
-        on_attach = function(client)
-          -- Disable formatting in the LSP since we're using direct prettier
-          client.server_capabilities.documentFormattingProvider = false
-        end,
         root_dir = require("lspconfig.util").root_pattern("package.json", "tsconfig.json", ".git"),
       })
-
-      -- ESLint LSP setup
+      
       require("lspconfig").eslint.setup({
+        capabilities = capabilities,
         settings = {
           format = { enable = true },
           codeActionOnSave = {
@@ -130,8 +103,25 @@ require("lazy").setup({
           },
         },
       })
+      
+      -- Disable Ruff hover in favor of Pyright
+      vim.api.nvim_create_autocmd("LspAttach", {
+        group = vim.api.nvim_create_augroup('lsp_attach_disable_ruff_hover', { clear = true }),
+        callback = function(args)
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          if client == nil then
+            return
+          end
+          if client.name == 'ruff' then
+            -- Disable hover in favor of Pyright
+            client.server_capabilities.hoverProvider = false
+          end
+        end,
+        desc = 'LSP: Disable hover capability from Ruff',
+      })
     end
   },
+
 
   -- We're using direct system prettier for formatting TS/JS files instead of plugins
 
@@ -229,37 +219,70 @@ require("lazy").setup({
   'kyazdani42/nvim-web-devicons',
 
   {
-    "hrsh7th/nvim-cmp", -- Completion Plugin
+    "hrsh7th/nvim-cmp",
     dependencies = {
-      "hrsh7th/cmp-nvim-lsp", -- LSP Completion
-      "hrsh7th/cmp-buffer", -- Buffer Completion
-      "hrsh7th/cmp-path", -- Path Completion
-      "hrsh7th/cmp-cmdline", -- Command-line Completion
-      "L3MON4D3/LuaSnip", -- Snippet Engine
-      "saadparwaiz1/cmp_luasnip", -- Snippet Completion
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "hrsh7th/cmp-vsnip",
+      "hrsh7th/vim-vsnip",
     },
     config = function()
       local cmp = require("cmp")
-      local luasnip = require("luasnip")
-
+      
       cmp.setup({
         snippet = {
           expand = function(args)
-            luasnip.lsp_expand(args.body) -- Expand Snippets
+            vim.fn["vsnip#anonymous"](args.body)
           end,
         },
-        mapping = {
-          ["<Tab>"] = cmp.mapping.select_next_item(),
-          ["<S-Tab>"] = cmp.mapping.select_prev_item(),
-          ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Enter to accept suggestion
-          ["<C-Space>"] = cmp.mapping.complete(), -- Manually trigger completion
-        },
-        sources = cmp.config.sources({
-          { name = "nvim_lsp" },
-          { name = "buffer" },
-          { name = "path" },
-          { name = "luasnip" },
+        mapping = cmp.mapping.preset.insert({
+          ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-f>'] = cmp.mapping.scroll_docs(4),
+          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<C-e>'] = cmp.mapping.abort(),
+          ['<CR>'] = cmp.mapping.confirm({ select = true }),
+          ['<Tab>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+          ['<S-Tab>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
         }),
+        sources = cmp.config.sources({
+          { name = 'nvim_lsp' },
+          { name = 'vsnip' },
+        }, {
+          { name = 'buffer' },
+        })
+      })
+
+      -- Use buffer source for `/` and `?`
+      cmp.setup.cmdline({ '/', '?' }, {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = 'buffer' }
+        }
+      })
+
+      -- Use cmdline & path source for ':'
+      cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+          { name = 'path' }
+        }, {
+          { name = 'cmdline' }
+        }),
+        matching = { disallow_symbol_nonprefix_matching = false }
       })
     end
   },
@@ -270,12 +293,103 @@ require("lazy").setup({
 vim.o.background = "dark" -- or "light" for light mode
 vim.cmd([[colorscheme gruvbox]])
 
--- Create custom user command for direct Prettier formatting
+-- Create custom user commands for formatting
 vim.api.nvim_create_user_command("PrettierFormat", function()
   local file = vim.fn.expand("%:p")
-  vim.fn.system({ "prettier", "--write", file })
-  vim.cmd("edit") -- Reload the buffer
-  print("Formatted with Prettier")
+  local bufnr = vim.api.nvim_get_current_buf()
+  
+  vim.api.nvim_echo({{"Running Prettier...", ""}}, false, {})
+  
+  -- Run Prettier asynchronously
+  vim.fn.jobstart({ "prettier", "--write", file }, {
+    on_exit = function(_, code)
+      if code ~= 0 then
+        vim.api.nvim_echo({{"Prettier formatting failed", "ErrorMsg"}}, false, {})
+      else
+        vim.api.nvim_echo({{"Formatted with Prettier", ""}}, false, {})
+      end
+      
+      -- Reload buffer if it's still valid
+      if vim.api.nvim_buf_is_valid(bufnr) then
+        vim.schedule(function()
+          if vim.api.nvim_buf_is_loaded(bufnr) then
+            vim.cmd("checktime")
+          end
+        end)
+      end
+    end,
+    stdout_buffered = true,
+    stderr_buffered = true,
+  })
+end, {})
+
+vim.api.nvim_create_user_command("ESLintFix", function()
+  local file = vim.fn.expand("%:p")
+  local bufnr = vim.api.nvim_get_current_buf()
+  
+  vim.api.nvim_echo({{"Running ESLint fix...", ""}}, false, {})
+  
+  -- Run ESLint asynchronously
+  vim.fn.jobstart({ "npx", "--no-install", "eslint", "--fix", file }, {
+    on_exit = function(_, code)
+      if code ~= 0 then
+        vim.api.nvim_echo({{"ESLint fix failed - make sure project has ESLint installed", "ErrorMsg"}}, false, {})
+      else
+        vim.api.nvim_echo({{"Fixed with ESLint", ""}}, false, {})
+      end
+      
+      -- Reload buffer if it's still valid
+      if vim.api.nvim_buf_is_valid(bufnr) then
+        vim.schedule(function()
+          if vim.api.nvim_buf_is_loaded(bufnr) then
+            vim.cmd("checktime")
+          end
+        end)
+      end
+    end,
+    stdout_buffered = true,
+    stderr_buffered = true,
+  })
+end, {})
+
+vim.api.nvim_create_user_command("FormatTS", function()
+  local file = vim.fn.expand("%:p")
+  local bufnr = vim.api.nvim_get_current_buf()
+  
+  vim.api.nvim_echo({{"Formatting with Prettier and ESLint...", ""}}, false, {})
+  
+  -- Run prettier first, then ESLint
+  vim.fn.jobstart({ "prettier", "--write", file }, {
+    on_exit = function(_, prettier_code)
+      -- Run ESLint after Prettier completes
+      vim.fn.jobstart({ "npx", "--no-install", "eslint", "--fix", file }, {
+        on_exit = function(_, eslint_code)
+          if prettier_code ~= 0 and eslint_code ~= 0 then
+            vim.api.nvim_echo({{"Formatting failed", "ErrorMsg"}}, false, {})
+          elseif prettier_code ~= 0 then
+            vim.api.nvim_echo({{"ESLint fix only (Prettier failed)", "WarningMsg"}}, false, {})
+          elseif eslint_code ~= 0 then
+            vim.api.nvim_echo({{"Formatted with Prettier only (ESLint failed)", "WarningMsg"}}, false, {})
+          else
+            vim.api.nvim_echo({{"Formatted with Prettier and ESLint", ""}}, false, {})
+          end
+          
+          -- Reload buffer if it's still valid
+          if vim.api.nvim_buf_is_valid(bufnr) then
+            vim.schedule(function()
+              if vim.api.nvim_buf_is_loaded(bufnr) then
+                vim.cmd("checktime")
+              end
+            end)
+          end
+        end,
+        stdout_buffered = true,
+        stderr_buffered = true,
+      })
+    end,
+    stdout_buffered = true,
+    stderr_buffered = true,
+  })
 end, {})
 
 -- Custom key mappings
@@ -286,6 +400,8 @@ vim.cmd [[
   " GitHub Copilot configuration
   let g:copilot_filetypes = { 'yaml': v:true, 'yml': v:true }
   imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
+  imap <silent><script><expr> <C-L> copilot#Next()
+  imap <silent><script><expr> <C-H> copilot#Previous()
   let g:copilot_no_tab_map = v:true
 
   " Telescope key mappings
@@ -297,8 +413,10 @@ vim.cmd [[
   " NERDTree toggle
   map <F3> :NERDTreeToggle<CR>
 
-  " Prettier format shortcut
+  " Formatting shortcuts
   nnoremap <leader>pf :PrettierFormat<CR>
+  nnoremap <leader>ef :ESLintFix<CR>
+  nnoremap <leader>tf :FormatTS<CR>
 ]]
 
 -- LSP Keybindings
@@ -339,6 +457,10 @@ vim.api.nvim_set_keymap("v", "<leader>ca", "<cmd>lua vim.lsp.buf.range_code_acti
 -- Show Diagnostics in Floating Window
 vim.api.nvim_set_keymap("n", "<leader>e", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
 
+-- Python specific commands
+vim.api.nvim_set_keymap("n", "<leader>my", "<cmd>RunMypy<CR>", opts)
+vim.api.nvim_set_keymap("n", "<leader>rf", "<cmd>RuffFormat<CR>", opts)
+
 -- Restart LSP
 vim.api.nvim_set_keymap("n", "<leader>rs", "<cmd>LspRestart<CR>", opts)
 
@@ -350,26 +472,218 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
--- Format TS/JS/Vue files with Prettier on save
+-- Format TS/JS/Vue files with Prettier & run ESLint fix asynchronously on save
 vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = { "*.ts", "*.tsx", "*.js", "*.jsx", "*.vue" },
   callback = function()
     local file = vim.fn.expand("%:p")
-    -- Format directly with system prettier command
-    vim.fn.system({ "prettier", "--write", file })
-    -- Reload the buffer to show changes
-    vim.cmd("e")
+    local bufnr = vim.api.nvim_get_current_buf()
+    
+    -- Run formatters asynchronously using vim.loop (libuv)
+    vim.loop.new_timer():start(0, 0, vim.schedule_wrap(function()
+      -- Run prettier in background
+      vim.fn.jobstart({ "prettier", "--write", file }, {
+        on_exit = function(_, code)
+          if code ~= 0 then return end
+          
+          -- After prettier completes, run eslint in background
+          vim.fn.jobstart({ "npx", "--no-install", "eslint", "--fix", file }, {
+            on_exit = function(_, eslint_code)
+              -- Only reload if buffer still exists and is for the same file
+              if vim.api.nvim_buf_is_valid(bufnr) and vim.api.nvim_buf_get_name(bufnr) == file then
+                vim.schedule(function()
+                  -- Check if buffer is still loaded before reloading
+                  if vim.api.nvim_buf_is_loaded(bufnr) then
+                    vim.cmd("checktime")
+                  end
+                end)
+              end
+            end,
+            stdout_buffered = true,
+            stderr_buffered = true,
+          })
+        end,
+        stdout_buffered = true,
+        stderr_buffered = true,
+      })
+    end))
   end,
 })
 
--- Python-specific format on save (using CoC only, not LSP)
+-- Python-specific format on save (using builtin LSP formatter)
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = { "*.py" },
   callback = function()
-    -- We're using CoC for Python formatting to prevent duplicate formatters
-    vim.cmd("silent! CocCommand python.runLinting")
+    -- Let LSP handle formatting instead of direct command
+    vim.lsp.buf.format({ 
+      async = true,
+      filter = function(client) 
+        return client.name == "ruff" or client.name == "pylsp" 
+      end
+    })
+    -- Don't run mypy on save for large projects to prevent multiple processes
   end,
 })
+
+-- Create Python formatting commands
+vim.api.nvim_create_user_command("RuffFormat", function()
+  vim.api.nvim_echo({{"Formatting with LSP...", ""}}, false, {})
+  
+  -- Use the LSP to format
+  vim.lsp.buf.format({ 
+    async = true,
+    filter = function(client) 
+      return client.name == "ruff" or client.name == "pylsp" 
+    end,
+    timeout_ms = 5000,
+  })
+  
+  -- Provide feedback
+  vim.defer_fn(function()
+    vim.api.nvim_echo({{"Formatting complete", ""}}, false, {})
+  end, 500)
+end, {})
+
+-- Run mypy only when manually triggered for large projects
+vim.api.nvim_create_user_command("RunMypy", function()
+  local file = vim.fn.expand("%:p")
+  local bufnr = vim.api.nvim_get_current_buf()
+  
+  vim.api.nvim_echo({{"Running dmypy with uva...", ""}}, false, {})
+  
+  -- Run dmypy asynchronously using uva
+  vim.fn.jobstart({ "uva", "dmypy", "run", "--", "." }, {
+    on_exit = function(_, code)
+      if code ~= 0 then
+        vim.api.nvim_echo({{"Dmypy found type errors", "WarningMsg"}}, false, {})
+      else
+        vim.api.nvim_echo({{"Dmypy: No type errors found", ""}}, false, {})
+      end
+    end,
+    on_stdout = function(_, data)
+      if data and #data > 0 then
+        -- Display dmypy output in quickfix
+        local lines = {}
+        for _, line in ipairs(data) do
+          if line ~= "" then
+            table.insert(lines, line)
+          end
+        end
+        if #lines > 0 then
+          vim.schedule(function()
+            vim.fn.setqflist({}, 'r', {
+              title = 'Dmypy Results',
+              lines = lines
+            })
+            vim.cmd("copen")
+          end)
+        end
+      end
+    end,
+    stdout_buffered = true,
+    stderr_buffered = true,
+  })
+end, {})
+
+-- Dmypy daemon management commands
+vim.api.nvim_create_user_command("DmypyStart", function()
+  vim.api.nvim_echo({{"Starting dmypy daemon...", ""}}, false, {})
+  local error_lines = {}
+  vim.fn.jobstart({ "uva", "dmypy", "start" }, {
+    on_exit = function(_, code)
+      if code == 0 then
+        vim.api.nvim_echo({{"Dmypy daemon started", ""}}, false, {})
+      else
+        vim.api.nvim_echo({{"Failed to start dmypy daemon", "ErrorMsg"}}, false, {})
+        if #error_lines > 0 then
+          vim.schedule(function()
+            vim.api.nvim_echo({{table.concat(error_lines, "\n"), "ErrorMsg"}}, false, {})
+          end)
+        end
+      end
+    end,
+    on_stderr = function(_, data)
+      if data then
+        for _, line in ipairs(data) do
+          if line ~= "" then
+            table.insert(error_lines, line)
+          end
+        end
+      end
+    end,
+    on_stdout = function(_, data)
+      if data then
+        for _, line in ipairs(data) do
+          if line ~= "" then
+            vim.schedule(function()
+              vim.api.nvim_echo({{line, ""}}, false, {})
+            end)
+          end
+        end
+      end
+    end,
+    stderr_buffered = true,
+    stdout_buffered = true,
+  })
+end, {})
+
+vim.api.nvim_create_user_command("DmypyStop", function()
+  vim.api.nvim_echo({{"Stopping dmypy daemon...", ""}}, false, {})
+  local error_lines = {}
+  vim.fn.jobstart({ "uva", "dmypy", "stop" }, {
+    on_exit = function(_, code)
+      if code == 0 then
+        vim.api.nvim_echo({{"Dmypy daemon stopped", ""}}, false, {})
+      else
+        vim.api.nvim_echo({{"Failed to stop dmypy daemon", "ErrorMsg"}}, false, {})
+        if #error_lines > 0 then
+          vim.schedule(function()
+            vim.api.nvim_echo({{table.concat(error_lines, "\n"), "ErrorMsg"}}, false, {})
+          end)
+        end
+      end
+    end,
+    on_stderr = function(_, data)
+      if data then
+        for _, line in ipairs(data) do
+          if line ~= "" then
+            table.insert(error_lines, line)
+          end
+        end
+      end
+    end,
+    stderr_buffered = true,
+  })
+end, {})
+
+vim.api.nvim_create_user_command("DmypyRestart", function()
+  vim.api.nvim_echo({{"Restarting dmypy daemon...", ""}}, false, {})
+  local error_lines = {}
+  vim.fn.jobstart({ "uva", "dmypy", "restart" }, {
+    on_exit = function(_, code)
+      if code == 0 then
+        vim.api.nvim_echo({{"Dmypy daemon restarted", ""}}, false, {})
+      else
+        vim.api.nvim_echo({{"Failed to restart dmypy daemon", "ErrorMsg"}}, false, {})
+        if #error_lines > 0 then
+          vim.schedule(function()
+            vim.api.nvim_echo({{table.concat(error_lines, "\n"), "ErrorMsg"}}, false, {})
+          end)
+        end
+      end
+    end,
+    on_stderr = function(_, data)
+      if data then
+        for _, line in ipairs(data) do
+          if line ~= "" then
+            table.insert(error_lines, line)
+          end
+        end
+      end
+    end,
+    stderr_buffered = true,
+  })
+end, {})
 
 vim.diagnostic.config({
   virtual_text = true,
