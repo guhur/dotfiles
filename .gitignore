@@ -3,3 +3,4 @@
 .vim/autoload
 bin
 .env.local
+.DS_Store
