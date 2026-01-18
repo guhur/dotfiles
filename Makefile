@@ -19,7 +19,7 @@ all: install update clean
 help :           ## Show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 	
-install: clean update
+install: clean update starship
 	git clone https://github.com/gpakosz/.tmux.git ${INSTALL_DIR}/.tmux
 
 update: 
@@ -136,7 +136,9 @@ fzf:
 	sudo apt-get install fzf
 
 starship:
-	curl -sS https://starship.rs/install.sh | sh
+	@if ! command -v starship > /dev/null; then \
+		curl -sS https://starship.rs/install.sh | sh; \
+	fi
 
 brew:
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && \
