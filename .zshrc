@@ -80,8 +80,8 @@ fi
 
 # History settings
 HISTFILE=~/.zsh_history
-HISTSIZE=50000
-SAVEHIST=50000
+HISTSIZE=100000
+SAVEHIST=100000
 setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format
 setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits
 setopt SHARE_HISTORY             # Share history between all sessions
@@ -256,3 +256,6 @@ bindkey '^e' end-of-line                     # Ctrl+E: accept all
 bindkey '^[[C' forward-char                  # Right arrow: accept one char
 bindkey '^[f' forward-word                   # Alt+F: accept one word
 bindkey '^[^[[C' forward-word                # Alt+Right: accept one word
+
+# Load secrets
+[ -f ~/.config/zsh/secrets.zsh ] && source ~/.config/zsh/secrets.zsh
