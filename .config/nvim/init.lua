@@ -140,9 +140,6 @@ require("lazy").setup({
   -- Vim Airline
   'vim-airline/vim-airline',
 
-  -- GitHub Copilot
-  'github/copilot.vim',
-
   -- YankRing
   'vim-scripts/YankRing.vim',
 
@@ -397,13 +394,6 @@ vim.cmd [[
   " YankRing configuration
   nnoremap <silent> <F12> :YRShow<CR>
 
-  " GitHub Copilot configuration
-  let g:copilot_filetypes = { 'yaml': v:true, 'yml': v:true }
-  imap <silent><script><expr> <C-J> copilot#Accept("\<CR>")
-  imap <silent><script><expr> <C-L> copilot#Next()
-  imap <silent><script><expr> <C-H> copilot#Previous()
-  let g:copilot_no_tab_map = v:true
-
   " Telescope key mappings
   nnoremap <leader><leader> <cmd>Telescope find_files<cr>
   nnoremap <leader>fg <cmd>Telescope live_grep<cr>
@@ -510,16 +500,20 @@ vim.api.nvim_create_autocmd("BufWritePost", {
   end,
 })
 
--- Python-specific format on save (using builtin LSP formatter)
-vim.api.nvim_create_autocmd("BufWritePre", {
+-- Python-specific format on save (using builtin LSP formatter, async)
+vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = { "*.py" },
   callback = function()
-    -- Let LSP handle formatting instead of direct command
-    vim.lsp.buf.format({ 
+    local bufnr = vim.api.nvim_get_current_buf()
+    local file = vim.fn.expand("%:p")
+
+    -- Format asynchronously via LSP
+    vim.lsp.buf.format({
       async = true,
-      filter = function(client) 
-        return client.name == "ruff" or client.name == "pylsp" 
-      end
+      filter = function(client)
+        return client.name == "ruff" or client.name == "pylsp"
+      end,
+      bufnr = bufnr,
     })
   end,
 })
@@ -549,7 +543,6 @@ vim.api.nvim_create_autocmd("BufWritePost", {
                 title = 'ty Results',
                 lines = lines
               })
-              vim.cmd("copen")
             end)
           end
         end
