@@ -30,7 +30,8 @@ export CONDA_ROOT=$HOME/anaconda3
 
 # commands
 # -----------------------------------------------------------------------------
-alias tb="nc termbin.com 9999" 
+alias ll="ls -alh"
+alias tb="nc termbin.com 9999"
 alias ca="conda activate"
 alias pudb="python -m pudb.run "
 alias e="nvim"
@@ -75,7 +76,7 @@ if [ "$USE_PYENV" = true ]; then
 fi
 
 
-# ZSH - Minimal Configuration (no Oh My Zsh)
+# ZSH configuration
 # -----------------------------------------------------------------------------
 
 # History settings
@@ -140,7 +141,7 @@ bindkey '^e' end-of-line
 # Colors
 autoload -U colors && colors
 
-# Git prompt function (minimal replacement for oh-my-zsh git plugin)
+# Git prompt function
 git_prompt_info() {
     local branch
     branch=$(git symbolic-ref --short HEAD 2>/dev/null) || return
@@ -161,7 +162,7 @@ else
     PROMPT='${ret_status} %{$fg[cyan]%}%c%{$reset_color%} $(git_prompt_info)'
 fi
 
-# Git aliases (from oh-my-zsh git plugin)
+# Git aliases
 alias g='git'
 alias ga='git add'
 alias gaa='git add --all'
@@ -259,3 +260,10 @@ bindkey '^[^[[C' forward-word                # Alt+Right: accept one word
 
 # Load secrets
 [ -f ~/.config/zsh/secrets.zsh ] && source ~/.config/zsh/secrets.zsh
+
+# bun completions
+[ -s "/Users/guhur/.bun/_bun" ] && source "/Users/guhur/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
